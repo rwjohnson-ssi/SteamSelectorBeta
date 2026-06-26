@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Start a guided product selection in SteamSelector Beta." />
+  <title>Guided Selection | SteamSelector Beta</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="siteHeaderMount"></div>
+  <main class="page page-content">
+    <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
+    <section class="page-heading narrow-heading">
+      <p class="eyebrow">Guided Selection</p>
+      <h1>Start with the application.</h1>
+      <p>This beta version points you to the right product family. Detailed sizing will be added later after the static catalog is fully tested.</p>
+    </section>
+    <form id="guidedSelectionForm" class="guided-form card">
+      <label for="guidedCategory">What type of equipment are you looking for?</label>
+      <select id="guidedCategory" required></select>
+      <label for="guidedNeed">What does it need to do?</label>
+      <textarea id="guidedNeed" rows="4" placeholder="Example: Drain condensate from a steam main, reduce steam pressure, or control process temperature."></textarea>
+      <button class="btn btn-primary" type="submit">Show Matching Products</button>
+    </form>
+    <section id="guidedRecommendation" class="guided-recommendation" hidden></section>
+  </main>
+  <footer class="site-footer"><div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div></footer>
+  <script src="categories.js"></script>
+  <script src="products.js"></script>
+  <script src="site-header.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
