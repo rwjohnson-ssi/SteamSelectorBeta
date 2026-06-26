@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Browse SteamSelector product category results." />
+  <title>Product Category | SteamSelector Beta</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="siteHeaderMount"></div>
+  <main class="page page-content">
+    <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
+    <section class="page-heading">
+      <p class="eyebrow">Product Category</p>
+      <h1 id="categoryTitle">Products</h1>
+      <p id="categoryDescription">Browse matching product models and open any item for more details.</p>
+    </section>
+    <section class="catalog-toolbar" aria-label="Catalog filters">
+      <label>Search within results <input id="categorySearchInput" type="search" placeholder="Model, series, connection..." /></label>
+      <span id="categoryResultCount" class="muted"></span>
+    </section>
+    <section id="subcategoryFilters" class="filter-pills" aria-label="Subcategory filters"></section>
+    <section class="catalog-table-wrap">
+      <table class="catalog-table">
+        <thead><tr><th>Model</th><th>Series</th><th>Size</th><th>Connection</th><th>Material</th><th></th></tr></thead>
+        <tbody id="catalogTableBody"></tbody>
+      </table>
+    </section>
+    <p id="categoryEmptyState" class="empty-state" hidden>No products match the current search.</p>
+  </main>
+  <footer class="site-footer"><div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div></footer>
+  <script src="categories.js"></script>
+  <script src="products.js"></script>
+  <script src="site-header.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
