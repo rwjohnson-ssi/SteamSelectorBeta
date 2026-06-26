@@ -6,67 +6,67 @@
   <meta name="description" content="SteamSelector Beta helps users browse steam equipment, search models, build project lists, and request quotes." />
   <title>SteamSelector Beta</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="industrial-home.css" />
 </head>
-<body class="page-home">
+<body class="page-home home-industrial">
   <div id="siteHeaderMount"></div>
 
   <main>
-    <section class="hero">
+    <section class="hero hero-industrial">
+      <div class="hero-steam-lines" aria-hidden="true"></div>
       <div class="page hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">SSI Services, Inc.</p>
-          <h1>Select Steam Equipment with Confidence.</h1>
-          <p class="hero-text">Browse product families, search known model numbers, and build a quote list for review.</p>
+          <p class="eyebrow">SteamSelector by SSI Services</p>
+          <h1>ENGINEERED SOLUTIONS.<br /><span>BUILT FOR STEAM.</span></h1>
+          <p class="hero-text">Find the right steam equipment for your application, then build a product list for quote review.</p>
+          <form id="modelSearchForm" class="model-search-form hero-model-search" action="search.html" method="get" role="search">
+            <label class="sr-only" for="modelSearchInput">Search model number</label>
+            <input id="modelSearchInput" name="q" type="search" placeholder="Search model number, series, or product type" autocomplete="off" />
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+          <div id="modelSearchResults" class="model-search-results hero-search-results" hidden></div>
           <div class="hero-actions">
-            <a class="btn btn-light" href="#browse-categories">Browse Products</a>
-            <a class="btn btn-primary" href="guided-selection.html">Guided Selection</a>
+            <a class="btn btn-primary" href="#browse-categories">Browse Categories</a>
+            <a class="btn btn-outline-light" href="guided-selection.html">Guided Selection</a>
           </div>
         </div>
-        <div class="hero-panel" aria-label="SteamSelector Beta test build">
+
+        <aside class="hero-panel hero-industrial-panel" aria-label="SteamSelector Beta test build">
           <span class="hero-panel-kicker">PUBLIC TEST BUILD</span>
-          <strong>Static HTML + CSS + JavaScript</strong>
-          <span>Product pricing and internal data are intentionally excluded while this repository is public.</span>
-        </div>
+          <strong>Product discovery built for steam-system work.</strong>
+          <span>Use this beta to test the catalog, product views, guided selection, and quote-list workflow.</span>
+        </aside>
       </div>
     </section>
 
-    <section class="model-search-section" aria-labelledby="model-search-title">
+    <section id="browse-categories" class="section category-section-industrial">
       <div class="page">
-        <div class="section-heading compact-heading">
-          <p class="eyebrow">Model Search</p>
-          <h2 id="model-search-title">Know the model number?</h2>
+        <div class="section-heading section-heading-industrial">
+          <p class="eyebrow">Explore the Catalog</p>
+          <h2>Product Categories</h2>
+          <p>Start with the equipment family, then narrow your options by model, size, connection, and construction.</p>
         </div>
-        <form id="modelSearchForm" class="model-search-form" action="search.html" method="get" role="search">
-          <label class="sr-only" for="modelSearchInput">Search model number</label>
-          <input id="modelSearchInput" name="q" type="search" placeholder="Search model number (example: TD52L or WFT-200)" autocomplete="off" />
-          <button class="btn btn-primary" type="submit">Search</button>
-        </form>
-        <div id="modelSearchResults" class="model-search-results" hidden></div>
+        <div id="categoryCardGrid" class="category-card-grid category-card-grid-industrial"></div>
       </div>
     </section>
 
-    <section id="browse-categories" class="section">
-      <div class="page">
-        <div class="section-heading">
-          <p class="eyebrow">Product Catalog</p>
-          <h2>Browse Steam Product Categories</h2>
-          <p>Explore product families, compare key specifications, and open a product detail view.</p>
-        </div>
-        <div id="categoryCardGrid" class="category-card-grid"></div>
+    <section class="trust-strip">
+      <div class="page trust-strip-grid">
+        <article><span class="trust-icon">◎</span><div><strong>Steam System Focus</strong><p>Product paths built around real steam and condensate applications.</p></div></article>
+        <article><span class="trust-icon">◌</span><div><strong>Technical Support</strong><p>Start with the catalog, then involve SSI when application review is needed.</p></div></article>
+        <article><span class="trust-icon">⌁</span><div><strong>Built for Projects</strong><p>Save selected models and quantities in one quote list.</p></div></article>
       </div>
     </section>
 
-    <section class="section section-soft">
-      <div class="page">
-        <div class="section-heading">
-          <p class="eyebrow">Simple Workflow</p>
-          <h2>How Guided Selection Works</h2>
+    <section class="guided-callout">
+      <div class="page guided-callout-inner">
+        <div class="guided-callout-icon" aria-hidden="true">✓</div>
+        <div>
+          <p class="eyebrow">Not Sure Where to Start?</p>
+          <h2>Use Guided Selection.</h2>
+          <p>Answer a few simple questions to start in the correct product category for your application.</p>
         </div>
-        <div class="steps-grid">
-          <article class="step-card"><span>1</span><h3>Select your application</h3><p>Start with what the equipment needs to do.</p></article>
-          <article class="step-card"><span>2</span><h3>Narrow product options</h3><p>Review the matching category and product family.</p></article>
-          <article class="step-card"><span>3</span><h3>Build a quote list</h3><p>Add models, quantities, and optional notes for review.</p></article>
-        </div>
+        <a class="btn btn-primary" href="guided-selection.html">Start Guided Selection <span aria-hidden="true">→</span></a>
       </div>
     </section>
   </main>
