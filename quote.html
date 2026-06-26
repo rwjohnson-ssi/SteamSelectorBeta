@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="SteamSelector quote list." />
+  <title>Quote List | SteamSelector Beta</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="siteHeaderMount"></div>
+  <main class="page page-content">
+    <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
+    <section class="page-heading">
+      <p class="eyebrow">Project List</p>
+      <h1>Quote List</h1>
+      <p>Set quantities and optional notes, then use the list as the starting point for a quote request.</p>
+    </section>
+    <p class="project-helper">Choose a project list or create a new one, then set qty and optional notes.</p>
+    <div id="quoteEmptyState" class="empty-state" hidden>Your quote list is empty. Browse categories to add a product.</div>
+    <section id="quoteList" class="quote-list"></section>
+    <div id="quoteActions" class="quote-actions" hidden>
+      <button id="copyQuoteButton" class="btn btn-primary" type="button">Copy Quote List</button>
+      <button id="clearQuoteButton" class="btn btn-secondary" type="button">Clear List</button>
+    </div>
+    <p id="quoteMessage" class="status-message" role="status"></p>
+  </main>
+  <footer class="site-footer"><div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div></footer>
+  <script src="categories.js"></script>
+  <script src="products.js"></script>
+  <script src="site-header.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
