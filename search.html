@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Search SteamSelector product models." />
+  <title>Search Models | SteamSelector Beta</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="siteHeaderMount"></div>
+  <main class="page page-content">
+    <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
+    <section class="page-heading"><p class="eyebrow">Model Search</p><h1>Search Product Models</h1></section>
+    <form id="searchPageForm" class="model-search-form" action="search.html" method="get">
+      <label class="sr-only" for="searchPageInput">Search model number</label>
+      <input id="searchPageInput" name="q" type="search" placeholder="Enter a model, series, or product type" />
+      <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+    <p id="searchPageSummary" class="muted"></p>
+    <section id="searchPageResults" class="search-page-results"></section>
+  </main>
+  <footer class="site-footer"><div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div></footer>
+  <script src="categories.js"></script>
+  <script src="products.js"></script>
+  <script src="site-header.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
