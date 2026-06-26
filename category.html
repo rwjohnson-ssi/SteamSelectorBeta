@@ -6,33 +6,79 @@
   <meta name="description" content="Browse SteamSelector product category results." />
   <title>Product Category | SteamSelector Beta</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="catalog-views.css" />
 </head>
 <body>
   <div id="siteHeaderMount"></div>
+
   <main class="page page-content">
     <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
+
     <section class="page-heading">
       <p class="eyebrow">Product Category</p>
       <h1 id="categoryTitle">Products</h1>
       <p id="categoryDescription">Browse matching product models and open any item for more details.</p>
     </section>
-    <section class="catalog-toolbar" aria-label="Catalog filters">
-      <label>Search within results <input id="categorySearchInput" type="search" placeholder="Model, series, connection..." /></label>
-      <span id="categoryResultCount" class="muted"></span>
+
+    <section class="catalog-toolbar" aria-label="Catalog filters and view options">
+      <label>
+        Search within results
+        <input id="categorySearchInput" type="search" placeholder="Model, series, connection..." />
+      </label>
+
+      <div class="catalog-toolbar-meta">
+        <span id="categoryResultCount" class="muted" aria-live="polite"></span>
+        <div class="catalog-view-switcher" role="group" aria-label="Choose product result view">
+          <button class="catalog-view-toggle is-active" type="button" data-catalog-view="list" aria-pressed="true">
+            <span aria-hidden="true">☰</span> List
+          </button>
+          <button class="catalog-view-toggle" type="button" data-catalog-view="table" aria-pressed="false">
+            <span aria-hidden="true">▦</span> Table
+          </button>
+        </div>
+      </div>
     </section>
+
     <section id="subcategoryFilters" class="filter-pills" aria-label="Subcategory filters"></section>
-    <section class="catalog-table-wrap">
-      <table class="catalog-table">
-        <thead><tr><th>Model</th><th>Series</th><th>Size</th><th>Connection</th><th>Material</th><th></th></tr></thead>
-        <tbody id="catalogTableBody"></tbody>
-      </table>
+
+    <section id="catalogResults" class="catalog-results" data-view="list" aria-label="Product results">
+      <div id="catalogList" class="catalog-list" aria-live="polite"></div>
+
+      <div class="catalog-table-wrap">
+        <table class="catalog-table">
+          <thead>
+            <tr>
+              <th scope="col" class="quick-view-column">Quick View</th>
+              <th scope="col">Model</th>
+              <th scope="col">Series</th>
+              <th scope="col">Size</th>
+              <th scope="col">Connection</th>
+              <th scope="col">Material</th>
+              <th scope="col"><span class="sr-only">Product page</span></th>
+            </tr>
+          </thead>
+          <tbody id="catalogTableBody"></tbody>
+        </table>
+      </div>
     </section>
+
     <p id="categoryEmptyState" class="empty-state" hidden>No products match the current search.</p>
   </main>
+
+  <div id="quickViewModal" class="quick-view-modal" hidden>
+    <div class="quick-view-backdrop" data-quick-view-close></div>
+    <section class="quick-view-dialog" role="dialog" aria-modal="true" aria-labelledby="quickViewTitle" tabindex="-1">
+      <button class="quick-view-close" type="button" data-quick-view-close aria-label="Close quick view">×</button>
+      <div id="quickViewContent"></div>
+    </section>
+  </div>
+
   <footer class="site-footer"><div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div></footer>
+
   <script src="categories.js"></script>
   <script src="products.js"></script>
   <script src="site-header.js"></script>
   <script src="app.js"></script>
+  <script src="catalog-views.js"></script>
 </body>
 </html>
