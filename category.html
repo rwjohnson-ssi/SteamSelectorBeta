@@ -3,73 +3,83 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Browse SteamSelector product category results." />
+  <meta name="description" content="Browse SteamSelector Beta product categories." />
   <title>Product Category | SteamSelector Beta</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="catalog-views.css" />
-  <link rel="stylesheet" href="mobile-catalog-density.css" />
+  <link rel="stylesheet" href="catalog-layout.css" />
 </head>
 <body class="catalog-page">
   <div id="siteHeaderMount"></div>
 
-  <main class="page page-content catalog-page-content">
-    <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
+  <main class="page catalog-shell">
+    <nav id="breadcrumbs" class="catalog-breadcrumbs" aria-label="Breadcrumb"></nav>
 
-    <section class="page-heading">
+    <header class="catalog-heading">
       <p class="eyebrow">Product Category</p>
       <h1 id="categoryTitle">Products</h1>
-      <p id="categoryDescription">Browse matching product models and open any item for more details.</p>
-    </section>
+      <p id="categoryDescription">Browse matching models, review key details, and open a full product page.</p>
+    </header>
 
-    <section class="catalog-toolbar" aria-label="Catalog filters and view options">
-      <label>
-        Search within results
-        <input id="categorySearchInput" type="search" placeholder="Model, series, connection..." />
-      </label>
+    <button id="openCatalogFilters" class="btn btn-secondary catalog-mobile-filter-button" type="button">Filters</button>
 
-      <div class="catalog-toolbar-meta">
-        <span id="categoryResultCount" class="muted" aria-live="polite"></span>
-        <div class="catalog-view-switcher" role="group" aria-label="Choose product result view">
-          <button class="catalog-view-toggle" type="button" data-catalog-view="list" aria-pressed="false">
-            <span aria-hidden="true">☰</span> List
-          </button>
-          <button class="catalog-view-toggle is-active" type="button" data-catalog-view="table" aria-pressed="true">
-            <span aria-hidden="true">▦</span> Table
-          </button>
+    <section class="catalog-layout">
+      <aside class="catalog-filters" aria-label="Catalog filters">
+        <div class="catalog-filter-header">
+          <h2>Filters</h2>
+          <button id="closeCatalogFilters" class="btn btn-secondary catalog-filter-close" type="button">Close</button>
         </div>
-      </div>
+
+        <label class="catalog-filter-field">
+          <span>Search</span>
+          <input id="catalogSearch" type="search" placeholder="Model, series, size..." autocomplete="off" />
+        </label>
+
+        <div id="catalogFilterFields"></div>
+
+        <div class="catalog-filter-actions">
+          <button id="applyCatalogFilters" class="btn btn-primary" type="button">Apply</button>
+          <button id="resetCatalogFilters" class="btn btn-secondary" type="button">Reset</button>
+        </div>
+      </aside>
+
+      <section class="catalog-results-panel" aria-label="Product results">
+        <div class="catalog-results-bar">
+          <span id="catalogResultCount" class="catalog-results-count" aria-live="polite">Loading products...</span>
+          <div class="catalog-view-switcher" role="group" aria-label="Choose product result view">
+            <button class="catalog-view-toggle" type="button" data-catalog-view="list" aria-pressed="false">List</button>
+            <button class="catalog-view-toggle is-active" type="button" data-catalog-view="table" aria-pressed="true">Table</button>
+          </div>
+        </div>
+
+        <div id="catalogTableWrap" class="catalog-table-wrap">
+          <table class="catalog-table">
+            <thead id="catalogTableHead"></thead>
+            <tbody id="catalogTableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="catalogList" class="catalog-cards" hidden></div>
+
+        <div id="catalogPagination" class="catalog-pagination" hidden>
+          <span id="catalogPaginationSummary">Showing 0–0 of 0</span>
+          <div class="catalog-pagination-controls">
+            <button id="catalogPreviousPage" class="catalog-page-button" type="button" aria-label="Previous page">‹</button>
+            <span id="catalogPageIndicator">Page 1 of 1</span>
+            <button id="catalogNextPage" class="catalog-page-button" type="button" aria-label="Next page">›</button>
+          </div>
+        </div>
+
+        <p id="catalogStatus" class="catalog-status" role="status"></p>
+      </section>
     </section>
-
-    <section id="subcategoryFilters" class="filter-pills" aria-label="Subcategory filters"></section>
-
-    <section id="catalogResults" class="catalog-results" data-view="table" aria-label="Product results">
-      <div id="catalogList" class="catalog-list" aria-live="polite"></div>
-
-      <div class="catalog-table-wrap">
-        <table class="catalog-table">
-          <thead>
-            <tr>
-              <th scope="col" class="quick-view-column">Quick View</th>
-              <th scope="col">Model</th>
-              <th scope="col">Series</th>
-              <th scope="col">Size</th>
-              <th scope="col">Connection</th>
-              <th scope="col">Material</th>
-              <th scope="col"><span class="sr-only">Product page</span></th>
-            </tr>
-          </thead>
-          <tbody id="catalogTableBody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <p id="categoryEmptyState" class="empty-state" hidden>No products match the current search.</p>
   </main>
 
+  <div id="catalogFilterBackdrop" class="catalog-filter-backdrop" aria-hidden="true"></div>
+
   <div id="quickViewModal" class="quick-view-modal" hidden>
-    <div class="quick-view-backdrop" data-quick-view-close></div>
+    <div class="quick-view-backdrop" data-quick-close></div>
     <section class="quick-view-dialog" role="dialog" aria-modal="true" aria-labelledby="quickViewTitle" tabindex="-1">
-      <button class="quick-view-close" type="button" data-quick-view-close aria-label="Close quick view">×</button>
+      <button class="quick-view-close" type="button" data-quick-close aria-label="Close quick view">×</button>
       <div id="quickViewContent"></div>
     </section>
   </div>
@@ -78,8 +88,9 @@
 
   <script src="categories.js"></script>
   <script src="products.js"></script>
+  <script src="catalog-core.js"></script>
+  <script src="catalog-config.js"></script>
   <script src="site-header.js"></script>
-  <script src="app.js"></script>
-  <script src="catalog-views.js"></script>
+  <script src="catalog-page.js"></script>
 </body>
 </html>
