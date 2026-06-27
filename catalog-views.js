@@ -202,6 +202,6 @@
     if (event.key === "Escape") closeQuickView();
   });
 
-  setView("list");
+  setView("table");
   refreshResults();
 })();
