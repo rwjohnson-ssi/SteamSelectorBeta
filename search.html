@@ -3,27 +3,39 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Search SteamSelector product models." />
+  <meta name="description" content="Search SteamSelector Beta product models." />
   <title>Search Models | SteamSelector Beta</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="catalog-layout.css" />
 </head>
-<body>
+<body class="search-page">
   <div id="siteHeaderMount"></div>
-  <main class="page page-content">
-    <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
-    <section class="page-heading"><p class="eyebrow">Model Search</p><h1>Search Product Models</h1></section>
-    <form id="searchPageForm" class="model-search-form" action="search.html" method="get">
-      <label class="sr-only" for="searchPageInput">Search model number</label>
-      <input id="searchPageInput" name="q" type="search" placeholder="Enter a model, series, or product type" />
-      <button class="btn btn-primary" type="submit">Search</button>
-    </form>
-    <p id="searchPageSummary" class="muted"></p>
-    <section id="searchPageResults" class="search-page-results"></section>
+
+  <main class="page search-shell">
+    <nav id="breadcrumbs" class="catalog-breadcrumbs" aria-label="Breadcrumb"></nav>
+    <header class="search-heading catalog-heading">
+      <p class="eyebrow">Model Search</p>
+      <h1>Search Product Models</h1>
+      <p>Search the public beta catalog by model, series, product category, connection, or material.</p>
+    </header>
+
+    <section class="search-card">
+      <form id="searchPageForm" class="search-form" action="search.html" method="get">
+        <label class="sr-only" for="searchPageInput">Search model number</label>
+        <input id="searchPageInput" name="q" type="search" placeholder="Enter a model, series, or product type" autocomplete="off" />
+        <button class="btn btn-primary" type="submit">Search</button>
+      </form>
+      <p id="searchPageSummary" class="product-doc-note"></p>
+      <section id="searchPageResults" class="search-results"></section>
+    </section>
   </main>
+
   <footer class="site-footer"><div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div></footer>
+
   <script src="categories.js"></script>
   <script src="products.js"></script>
+  <script src="catalog-core.js"></script>
   <script src="site-header.js"></script>
-  <script src="app.js"></script>
+  <script src="search-page.js"></script>
 </body>
 </html>
