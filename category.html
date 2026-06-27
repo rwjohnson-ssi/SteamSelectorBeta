@@ -30,10 +30,10 @@
       <div class="catalog-toolbar-meta">
         <span id="categoryResultCount" class="muted" aria-live="polite"></span>
         <div class="catalog-view-switcher" role="group" aria-label="Choose product result view">
-          <button class="catalog-view-toggle is-active" type="button" data-catalog-view="list" aria-pressed="true">
+          <button class="catalog-view-toggle" type="button" data-catalog-view="list" aria-pressed="false">
             <span aria-hidden="true">☰</span> List
           </button>
-          <button class="catalog-view-toggle" type="button" data-catalog-view="table" aria-pressed="false">
+          <button class="catalog-view-toggle is-active" type="button" data-catalog-view="table" aria-pressed="true">
             <span aria-hidden="true">▦</span> Table
           </button>
         </div>
@@ -42,7 +42,7 @@
 
     <section id="subcategoryFilters" class="filter-pills" aria-label="Subcategory filters"></section>
 
-    <section id="catalogResults" class="catalog-results" data-view="list" aria-label="Product results">
+    <section id="catalogResults" class="catalog-results" data-view="table" aria-label="Product results">
       <div id="catalogList" class="catalog-list" aria-live="polite"></div>
 
       <div class="catalog-table-wrap">
