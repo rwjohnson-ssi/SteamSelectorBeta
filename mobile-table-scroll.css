@@ -17,6 +17,10 @@
     text-align: right;
   }
 
+  .catalog-page .catalog-results-panel:has(#catalogTableWrap[hidden]) .catalog-scroll-hint {
+    display: none;
+  }
+
   .catalog-page .catalog-table-wrap {
     position: relative;
     overflow-x: auto;
