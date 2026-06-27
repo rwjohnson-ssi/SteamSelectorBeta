@@ -6,29 +6,52 @@
   <meta name="description" content="Start a guided product selection in SteamSelector Beta." />
   <title>Guided Selection | SteamSelector Beta</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="catalog-layout.css" />
 </head>
-<body>
+<body class="guided-page">
   <div id="siteHeaderMount"></div>
-  <main class="page page-content">
-    <nav id="breadcrumbs" class="breadcrumbs" aria-label="Breadcrumb"></nav>
-    <section class="page-heading narrow-heading">
+
+  <main class="page guided-shell">
+    <nav id="breadcrumbs" class="catalog-breadcrumbs" aria-label="Breadcrumb"></nav>
+    <header class="guided-heading catalog-heading">
       <p class="eyebrow">Guided Selection</p>
       <h1>Start with the application.</h1>
       <p>This beta version points you to the right product family. Detailed sizing will be added later after the static catalog is fully tested.</p>
+    </header>
+
+    <section class="guided-grid">
+      <aside class="guided-card">
+        <h2>How it works</h2>
+        <div class="guided-steps">
+          <div class="guided-step">1. Select the equipment family</div>
+          <div class="guided-step">2. Describe the application</div>
+          <div class="guided-step">3. Browse the correct product group</div>
+          <div class="guided-step">4. Add models to a quote list</div>
+        </div>
+      </aside>
+
+      <section class="guided-card">
+        <form id="guidedSelectionForm">
+          <label for="guidedCategory">What type of equipment are you looking for?
+            <select id="guidedCategory" required></select>
+          </label>
+          <label for="guidedNeed">What does it need to do?
+            <textarea id="guidedNeed" rows="4" placeholder="Example: Drain condensate from a steam main, reduce steam pressure, or control process temperature."></textarea>
+          </label>
+          <div class="guided-actions"><button class="btn btn-primary" type="submit">Show Matching Products</button></div>
+        </form>
+      </section>
     </section>
-    <form id="guidedSelectionForm" class="guided-form card">
-      <label for="guidedCategory">What type of equipment are you looking for?</label>
-      <select id="guidedCategory" required></select>
-      <label for="guidedNeed">What does it need to do?</label>
-      <textarea id="guidedNeed" rows="4" placeholder="Example: Drain condensate from a steam main, reduce steam pressure, or control process temperature."></textarea>
-      <button class="btn btn-primary" type="submit">Show Matching Products</button>
-    </form>
+
     <section id="guidedRecommendation" class="guided-recommendation" hidden></section>
   </main>
+
   <footer class="site-footer"><div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div></footer>
+
   <script src="categories.js"></script>
   <script src="products.js"></script>
+  <script src="catalog-core.js"></script>
   <script src="site-header.js"></script>
-  <script src="app.js"></script>
+  <script src="guided-selection-page.js"></script>
 </body>
 </html>
