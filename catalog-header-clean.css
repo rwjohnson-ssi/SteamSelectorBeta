@@ -1,0 +1,11 @@
+/* Keep sortable catalog headers clean; sort controls live in Filter & Sort. */
+
+.catalog-page .results-table .results-column-button {
+  gap: 0;
+}
+
+.catalog-page .results-table .results-column-button::after,
+.catalog-page .results-table .results-column-button.is-active::after {
+  display: none;
+  content: none;
+}
