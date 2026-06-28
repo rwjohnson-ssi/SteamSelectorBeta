@@ -92,8 +92,15 @@
   }
 
   function getCategoryHref(categoryId, childId) {
-    const parameters = new URLSearchParams({ id: categoryId });
-    if (childId && childId !== "all") parameters.set("type", childId);
+    const category = CATEGORY_DEFINITIONS.find(function (entry) {
+      return entry.id === categoryId;
+    });
+
+    if (!category) return "index.html#browse-categories";
+
+    const parameters = new URLSearchParams({ id: category.id });
+    const validChild = category.children.some(function (child) { return child.id === childId; });
+    if (childId && childId !== "all" && validChild) parameters.set("type", childId);
     return "category.html?" + parameters.toString();
   }
 
