@@ -1,0 +1,325 @@
+/*
+  Shared Filter & Sort panel.
+  Replaces compact dropdown filters with an ecommerce-style expandable checkbox drawer.
+*/
+
+.catalog-page .catalog-filter-drawer {
+  position: fixed;
+  z-index: 650;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(540px, calc(100vw - 54px));
+  max-width: none;
+  padding: 0;
+  overflow: hidden;
+  color: #22272e;
+  background: #fffdfb;
+  box-shadow: 18px 0 48px rgba(11, 14, 18, .27);
+  transform: translateX(-105%);
+  transition: transform .23s ease;
+}
+
+body.catalog-filter-open .catalog-filter-drawer {
+  transform: translateX(0);
+}
+
+.catalog-page .catalog-filter-backdrop {
+  z-index: 640;
+  background: rgba(14, 18, 22, .42);
+  backdrop-filter: blur(1px);
+}
+
+.catalog-filter-panel-heading {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 96px;
+  padding: 0 32px;
+  background: #fffdfb;
+  border-bottom: 1px solid #d9dde1;
+}
+
+.catalog-filter-panel-heading h2 {
+  margin: 0;
+  color: #2b3037;
+  font-size: clamp(25px, 4vw, 32px);
+  font-weight: 850;
+  letter-spacing: -.035em;
+}
+
+.catalog-filter-panel-close {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  place-items: center;
+  color: #11161b;
+  background: transparent;
+  border: 0;
+  font-size: 47px;
+  font-weight: 300;
+  line-height: .8;
+}
+
+.catalog-filter-panel-close:focus-visible,
+.catalog-filter-accordion-toggle:focus-visible,
+.catalog-filter-option:focus-within,
+.catalog-filter-clear:focus-visible,
+.catalog-filter-done:focus-visible {
+  outline: 3px solid rgba(225, 36, 44, .34);
+  outline-offset: 2px;
+}
+
+.catalog-filter-panel-scroll {
+  min-height: 0;
+  padding: 3px 32px 32px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.catalog-filter-accordion {
+  border-bottom: 1px solid #d9dde1;
+}
+
+.catalog-filter-accordion-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 86px;
+  padding: 0;
+  color: #343940;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  text-align: left;
+}
+
+.catalog-filter-accordion-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.catalog-filter-accordion-count {
+  display: inline-grid;
+  min-width: 21px;
+  height: 21px;
+  padding: 0 5px;
+  place-items: center;
+  color: #fff;
+  background: #e1242c;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.catalog-filter-accordion-symbol {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: #e1242c;
+  font-size: 40px;
+  font-weight: 300;
+  line-height: .7;
+}
+
+.catalog-filter-options {
+  display: none;
+  padding: 1px 0 24px;
+}
+
+.catalog-filter-accordion.is-open .catalog-filter-options {
+  display: grid;
+  gap: 14px;
+}
+
+.catalog-filter-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 38px;
+  color: #353b43;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.catalog-filter-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.catalog-filter-checkbox {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  color: #fff;
+  background: #fff;
+  border: 2px solid #d6dadd;
+  box-sizing: border-box;
+}
+
+.catalog-filter-option input:checked + .catalog-filter-checkbox {
+  background: #e1242c;
+  border-color: #e1242c;
+}
+
+.catalog-filter-option input:checked + .catalog-filter-checkbox::after {
+  width: 12px;
+  height: 7px;
+  margin-top: -3px;
+  content: "";
+  border: solid currentColor;
+  border-width: 0 0 3px 3px;
+  transform: rotate(-45deg);
+}
+
+.catalog-filter-option-label {
+  min-width: 0;
+}
+
+.catalog-filter-option-total {
+  color: #5e6670;
+  font-variant-numeric: tabular-nums;
+}
+
+.catalog-filter-sort-options {
+  display: grid;
+  gap: 10px;
+}
+
+.catalog-filter-sort-options select {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 43px 0 13px;
+  color: #2d333a;
+  appearance: auto;
+  background: #fff;
+  border: 1px solid #cfd5db;
+  border-radius: 2px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.catalog-filter-sort-help {
+  margin: 0;
+  color: #68727e;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.catalog-filter-panel-actions {
+  display: grid;
+  grid-template-columns: minmax(0, .58fr) minmax(0, 1.42fr);
+  gap: 16px;
+  align-items: center;
+  min-height: 112px;
+  padding: 16px 32px;
+  background: #fffdfb;
+  border-top: 1px solid #cdd3d8;
+  box-shadow: 0 -8px 18px rgba(16, 21, 25, .05);
+}
+
+.catalog-filter-clear,
+.catalog-filter-done {
+  min-height: 56px;
+  border-radius: 0;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 850;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+
+.catalog-filter-clear {
+  padding: 0;
+  color: #d51e27;
+  background: transparent;
+  border: 0;
+  text-transform: none;
+}
+
+.catalog-filter-done {
+  color: #fff;
+  background: #e1242c;
+  border: 1px solid #e1242c;
+}
+
+.catalog-filter-done:hover {
+  background: #bd151c;
+  border-color: #bd151c;
+}
+
+@media (max-width: 760px) {
+  .catalog-page .catalog-filter-drawer {
+    width: calc(100vw - 42px);
+  }
+
+  .catalog-filter-panel-heading {
+    min-height: 78px;
+    padding: 0 22px;
+  }
+
+  .catalog-filter-panel-heading h2 {
+    font-size: 27px;
+  }
+
+  .catalog-filter-panel-close {
+    width: 43px;
+    height: 43px;
+    font-size: 42px;
+  }
+
+  .catalog-filter-panel-scroll {
+    padding: 2px 22px 24px;
+  }
+
+  .catalog-filter-accordion-toggle {
+    min-height: 72px;
+  }
+
+  .catalog-filter-accordion-name {
+    font-size: 17px;
+  }
+
+  .catalog-filter-option {
+    grid-template-columns: 29px minmax(0, 1fr) auto;
+    gap: 13px;
+    font-size: 16px;
+  }
+
+  .catalog-filter-checkbox {
+    width: 29px;
+    height: 29px;
+  }
+
+  .catalog-filter-panel-actions {
+    min-height: 92px;
+    gap: 12px;
+    padding: 13px 22px calc(13px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .catalog-filter-clear,
+  .catalog-filter-done {
+    min-height: 50px;
+    font-size: 14px;
+  }
+}
