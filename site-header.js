@@ -51,7 +51,9 @@
     }
 
     appendScript("steamselector-global-search-config", "global-search-config.js?v=global-search-1", function () {
-      appendScript("steamselector-global-search-script", "global-search.js?v=global-search-1", function () {});
+      appendScript("steamselector-global-search-script", "global-search.js?v=global-search-2", function () {
+        appendScript("steamselector-global-search-close-guard", "global-search-close-guard.js?v=global-search-close-1", function () {});
+      });
     });
   }
 
