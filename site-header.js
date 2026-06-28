@@ -18,7 +18,7 @@
     const stylesheet = document.createElement("link");
     stylesheet.id = "steamselector-mobile-bottom-nav-style";
     stylesheet.rel = "stylesheet";
-    stylesheet.href = "mobile-bottom-nav.css?v=global-mobile-nav-1";
+    stylesheet.href = "mobile-bottom-nav.css?v=global-mobile-nav-2";
     document.head.appendChild(stylesheet);
   }
 
@@ -93,7 +93,7 @@
   function renderMobileBottomNavigation() {
     return "<nav class=\"mobile-bottom-nav\" aria-label=\"Mobile primary navigation\">"
       + navLink("home", "index.html", "Home", "home", false)
-      + navLink("products", core.categoryUrl("steam-traps"), "Products", "products", false)
+      + navLink("products", "index.html#browse-categories", "Products", "products", false)
       + navLink("quote", "quote.html", "Quote List", "quote", true)
       + navLink("resources", "guided-selection.html", "Resources", "resources", false)
       + "<button type=\"button\" aria-disabled=\"true\" aria-label=\"Account features are not available in this beta\">"
