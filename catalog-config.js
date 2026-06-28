@@ -1,50 +1,45 @@
 /*
   SteamSelector Beta catalog configuration.
-  Update shared filters, table columns, labels, and default behavior here.
-  Category-specific overrides can be added below without copying page controllers.
+  Shared filters, table columns, result count options, and default behavior live here.
 */
 (function () {
   "use strict";
 
   const SHARED_CATALOG_CONFIG = {
     defaultView: "table",
-    pageSize: 10,
+    defaultSort: "best-match",
+    pageSize: 25,
+    pageSizes: [25, 50, 100],
     filters: [
-      { key: "subcategory", label: "Subcategory" },
+      { key: "subcategory", label: "Type" },
       { key: "series", label: "Series" },
       { key: "size", label: "Size" },
       { key: "connection", label: "Connection" },
       { key: "material", label: "Body Material" }
     ],
     tableColumns: [
-      { key: "subcategory", label: "Type" },
-      { key: "series", label: "Series" },
-      { key: "size", label: "Size" },
-      { key: "connection", label: "Connection" },
-      { key: "material", label: "Body" },
-      { key: "pmo", label: "Max Rating" }
+      { key: "subcategory", label: "Type", sortable: true },
+      { key: "size", label: "Size", sortable: true },
+      { key: "connection", label: "Connection", sortable: true },
+      { key: "pmo", label: "Max Rating", sortable: true }
     ]
   };
 
   const CATEGORY_OVERRIDES = {
     "steam-traps": {
       tableColumns: [
-        { key: "subcategory", label: "Trap Type" },
-        { key: "series", label: "Series" },
-        { key: "size", label: "Size" },
-        { key: "connection", label: "Connection" },
-        { key: "material", label: "Body" },
-        { key: "pmo", label: "Max PMO" }
+        { key: "subcategory", label: "Type", sortable: true },
+        { key: "size", label: "Size", sortable: true },
+        { key: "connection", label: "Connection", sortable: true },
+        { key: "pmo", label: "Max PMO", sortable: true }
       ]
     },
     regulators: {
       tableColumns: [
-        { key: "subcategory", label: "Regulator Type" },
-        { key: "series", label: "Series" },
-        { key: "size", label: "Size" },
-        { key: "connection", label: "Connection" },
-        { key: "material", label: "Body" },
-        { key: "pmo", label: "Max Inlet" }
+        { key: "subcategory", label: "Type", sortable: true },
+        { key: "size", label: "Size", sortable: true },
+        { key: "connection", label: "Connection", sortable: true },
+        { key: "pmo", label: "Max Inlet", sortable: true }
       ]
     }
   };
