@@ -4,8 +4,9 @@
 
   const core = window.SteamSelectorCore;
   const productApi = window.SteamSelectorProducts;
+  const quantityApi = window.SteamSelectorQuantity;
 
-  if (!core || !productApi) return;
+  if (!core || !productApi || !quantityApi) return;
 
   const model = core.parameters().get("model");
   const product = productApi.getProductById(model);
@@ -38,6 +39,16 @@
       + "</a>";
   }
 
+  function updateAddButtonLabel() {
+    const quantityInput = document.getElementById("productQty");
+    const addButton = document.getElementById("addProductToQuote");
+    if (!quantityInput || !addButton) return;
+
+    const quantity = quantityApi.normalize(quantityInput.value);
+    quantityInput.value = String(quantity);
+    addButton.textContent = "Add " + quantity + " to Quote";
+  }
+
   document.title = product.id + " | SteamSelector Beta";
   core.renderBreadcrumbs([
     { label: "Home", href: "index.html" },
@@ -54,8 +65,8 @@
     + "<p class=\"product-description\">" + core.escapeHtml(product.description) + "</p>"
     + "<div class=\"product-specs\">" + renderSpecs() + "</div>"
     + "<div class=\"product-action-row\">"
-    + "<label class=\"product-quantity\"><span>Qty</span><input id=\"productQty\" type=\"number\" min=\"1\" value=\"1\" /></label>"
-    + "<button id=\"addProductToQuote\" class=\"btn btn-primary\" type=\"button\">Add to Quote</button>"
+    + quantityApi.markup("productQty", "Quantity")
+    + "<button id=\"addProductToQuote\" class=\"btn btn-primary\" type=\"button\">Add 1 to Quote</button>"
     + "<a class=\"btn btn-secondary\" href=\"quote.html\">View Quote</a>"
     + "</div>"
     + "</section>"
@@ -73,9 +84,18 @@
     ? "<section class=\"product-section\"><h2>Related Series Products</h2><div class=\"related-products\">" + relatedProducts.map(renderRelatedCard).join("") + "</div></section>"
     : "<section class=\"product-section\"><h2>Related Series Products</h2><p class=\"product-doc-note\">No additional public beta models are available for this series yet.</p></section>";
 
+  quantityApi.bind(document);
+  updateAddButtonLabel();
+
+  document.addEventListener("steamselector:quantity-change", function (event) {
+    if (event.target && event.target.id === "productQty") updateAddButtonLabel();
+  });
+
   document.getElementById("addProductToQuote").addEventListener("click", function () {
-    const quantity = document.getElementById("productQty").value;
+    const quantity = quantityApi.normalize(document.getElementById("productQty").value);
     core.quote.add(product, quantity);
-    status.textContent = product.id + " was added to the quote list.";
+    status.textContent = quantity === 1
+      ? product.id + " was added to the quote list."
+      : quantity + " × " + product.id + " were added to the quote list.";
   });
 })();
