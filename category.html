@@ -7,79 +7,98 @@
   <title>Product Category | SteamSelector Beta</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="catalog-layout.css" />
-  <link rel="stylesheet" href="catalog-mobile-whole-row.css?v=whole-row-swipe-3" />
   <link rel="stylesheet" href="quantity-stepper.css?v=qty-stepper-1" />
   <link rel="stylesheet" href="quick-view-mobile.css?v=mobile-sheet-1" />
+  <link rel="stylesheet" href="catalog-results-design.css?v=results-layout-1" />
 </head>
 <body class="catalog-page">
   <div id="siteHeaderMount"></div>
 
-  <main class="page catalog-shell">
-    <nav id="breadcrumbs" class="catalog-breadcrumbs" aria-label="Breadcrumb"></nav>
+  <main class="results-page page">
+    <nav id="breadcrumbs" class="results-breadcrumbs" aria-label="Breadcrumb"></nav>
 
-    <header class="catalog-heading">
-      <p class="eyebrow">Product Category</p>
-      <h1 id="categoryTitle">Products</h1>
-      <p id="categoryDescription">Browse matching models, review key details, and open a full product page.</p>
+    <header class="results-heading">
+      <div>
+        <h1 id="categoryTitle">Products</h1>
+        <p id="catalogResultCount" class="results-count" aria-live="polite">Loading products...</p>
+      </div>
+      <div class="results-view-switcher" role="group" aria-label="Choose product result view">
+        <button class="results-view-button is-active" type="button" data-catalog-view="table" aria-pressed="true" aria-label="Table result view"><span aria-hidden="true">☷</span></button>
+        <button class="results-view-button" type="button" data-catalog-view="list" aria-pressed="false" aria-label="Grid result view"><span aria-hidden="true">⊞</span></button>
+      </div>
     </header>
 
-    <button id="openCatalogFilters" class="btn btn-secondary catalog-mobile-filter-button" type="button">Filters</button>
+    <section class="results-controls" aria-label="Catalog controls">
+      <button id="openCatalogFilters" class="results-control results-filter-button" type="button" aria-expanded="false">
+        <span class="results-control-icon" aria-hidden="true">⌁</span>
+        <span id="catalogFilterLabel">Filter</span>
+      </button>
 
-    <section class="catalog-layout">
-      <aside class="catalog-filters" aria-label="Catalog filters">
-        <div class="catalog-filter-header">
-          <h2>Filters</h2>
-          <button id="closeCatalogFilters" class="btn btn-secondary catalog-filter-close" type="button">Close</button>
+      <label class="results-control results-select-control" for="catalogSort">
+        <span class="results-control-icon" aria-hidden="true">↕</span>
+        <span>Sort:</span>
+        <select id="catalogSort" aria-label="Sort products">
+          <option value="best-match">Best Match</option>
+          <option value="id">Model</option>
+          <option value="subcategory">Type</option>
+          <option value="size">Size</option>
+          <option value="connection">Connection</option>
+          <option value="pmo">Max Rating</option>
+        </select>
+      </label>
+
+      <label class="results-control results-select-control" for="catalogPageSize">
+        <span>Show:</span>
+        <select id="catalogPageSize" aria-label="Products per page">
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </label>
+    </section>
+
+    <aside id="catalogFilters" class="catalog-filter-drawer" aria-label="Catalog filters" aria-hidden="true">
+      <div class="catalog-filter-drawer-heading">
+        <div><p class="catalog-kicker">Refine results</p><h2>Filters</h2></div>
+        <button id="closeCatalogFilters" class="catalog-drawer-close" type="button" aria-label="Close filters">×</button>
+      </div>
+
+      <label class="catalog-filter-field catalog-filter-search">
+        <span>Search within results</span>
+        <input id="catalogSearch" type="search" placeholder="Model, series, size..." autocomplete="off" />
+      </label>
+
+      <div id="catalogFilterFields"></div>
+
+      <div class="catalog-filter-actions">
+        <button id="applyCatalogFilters" class="btn btn-primary" type="button">Apply Filters</button>
+        <button id="resetCatalogFilters" class="btn btn-secondary" type="button">Reset</button>
+      </div>
+    </aside>
+    <div id="catalogFilterBackdrop" class="catalog-filter-backdrop" aria-hidden="true"></div>
+
+    <section class="results-table-region" aria-label="Product results">
+      <div id="catalogTableWrap" class="results-table-wrap">
+        <table class="results-table catalog-table">
+          <thead id="catalogTableHead"></thead>
+          <tbody id="catalogTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="catalogList" class="results-card-grid" hidden></div>
+
+      <div id="catalogPagination" class="results-pagination" hidden>
+        <span id="catalogPaginationSummary">Showing 0 to 0 of 0 products</span>
+        <div class="results-pagination-controls">
+          <button id="catalogPreviousPage" class="results-page-button" type="button" aria-label="Previous page">‹</button>
+          <span id="catalogPageIndicator">1</span>
+          <button id="catalogNextPage" class="results-page-button" type="button" aria-label="Next page">›</button>
         </div>
+      </div>
 
-        <label class="catalog-filter-field">
-          <span>Search</span>
-          <input id="catalogSearch" type="search" placeholder="Model, series, size..." autocomplete="off" />
-        </label>
-
-        <div id="catalogFilterFields"></div>
-
-        <div class="catalog-filter-actions">
-          <button id="applyCatalogFilters" class="btn btn-primary" type="button">Apply</button>
-          <button id="resetCatalogFilters" class="btn btn-secondary" type="button">Reset</button>
-        </div>
-      </aside>
-
-      <section class="catalog-results-panel" aria-label="Product results">
-        <div class="catalog-results-bar">
-          <span id="catalogResultCount" class="catalog-results-count" aria-live="polite">Loading products...</span>
-          <div class="catalog-view-switcher" role="group" aria-label="Choose product result view">
-            <button class="catalog-view-toggle" type="button" data-catalog-view="list" aria-pressed="false">List</button>
-            <button class="catalog-view-toggle is-active" type="button" data-catalog-view="table" aria-pressed="true">Table</button>
-          </div>
-        </div>
-
-        <p class="catalog-scroll-hint" aria-hidden="true">Swipe left to see more columns →</p>
-
-        <div id="catalogTableWrap" class="catalog-table-wrap">
-          <table class="catalog-table">
-            <thead id="catalogTableHead"></thead>
-            <tbody id="catalogTableBody"></tbody>
-          </table>
-        </div>
-
-        <div id="catalogList" class="catalog-cards" hidden></div>
-
-        <div id="catalogPagination" class="catalog-pagination" hidden>
-          <span id="catalogPaginationSummary">Showing 0–0 of 0</span>
-          <div class="catalog-pagination-controls">
-            <button id="catalogPreviousPage" class="catalog-page-button" type="button" aria-label="Previous page">‹</button>
-            <span id="catalogPageIndicator">Page 1 of 1</span>
-            <button id="catalogNextPage" class="catalog-page-button" type="button" aria-label="Next page">›</button>
-          </div>
-        </div>
-
-        <p id="catalogStatus" class="catalog-status" role="status"></p>
-      </section>
+      <p id="catalogStatus" class="catalog-status" role="status"></p>
     </section>
   </main>
-
-  <div id="catalogFilterBackdrop" class="catalog-filter-backdrop" aria-hidden="true"></div>
 
   <div id="quickViewModal" class="quick-view-modal" hidden>
     <div class="quick-view-backdrop" data-quick-close></div>
@@ -96,7 +115,7 @@
   <script src="catalog-core.js"></script>
   <script src="catalog-config.js"></script>
   <script src="quantity-stepper.js?v=qty-stepper-1"></script>
-  <script src="site-header.js"></script>
-  <script src="catalog-page.js?v=quick-view-qty-1"></script>
+  <script src="site-header.js?v=catalog-header-1"></script>
+  <script src="catalog-page.js?v=results-layout-1"></script>
 </body>
 </html>
