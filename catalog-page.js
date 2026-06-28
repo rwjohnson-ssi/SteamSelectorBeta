@@ -24,18 +24,16 @@
 
   const dom = {
     title: document.getElementById("categoryTitle"),
-    breadcrumbs: document.getElementById("breadcrumbs"),
     resultCount: document.getElementById("catalogResultCount"),
     filterLabel: document.getElementById("catalogFilterLabel"),
     filterDrawer: document.getElementById("catalogFilters"),
     filterBackdrop: document.getElementById("catalogFilterBackdrop"),
     openFilters: document.getElementById("openCatalogFilters"),
-    closeFilters: document.getElementById("closeCatalogFilters"),
+    closeFilters: Array.from(document.querySelectorAll("[data-close-catalog-filters]")),
     filters: document.getElementById("catalogFilterFields"),
     filterSearch: document.getElementById("catalogSearch"),
     headerSearch: document.getElementById("catalogHeaderSearchInput"),
     headerSearchForm: document.getElementById("catalogHeaderSearchForm"),
-    applyFilters: document.getElementById("applyCatalogFilters"),
     resetFilters: document.getElementById("resetCatalogFilters"),
     sort: document.getElementById("catalogSort"),
     pageSize: document.getElementById("catalogPageSize"),
@@ -56,6 +54,14 @@
 
   if (!dom.title || !dom.resultCount || !dom.filters || !dom.tableHead || !dom.tableBody || !dom.list || !dom.modal || !dom.modalContent) return;
 
+  function emptyFilters() {
+    const filters = {};
+    config.filters.forEach(function (filter) {
+      filters[filter.key] = [];
+    });
+    return filters;
+  }
+
   const state = {
     view: config.defaultView || "table",
     page: 1,
@@ -63,15 +69,31 @@
     search: "",
     sortKey: config.defaultSort || "best-match",
     sortDirection: "asc",
-    filters: {
-      subcategory: initialSubcategory,
-      series: "all",
-      size: "all",
-      connection: "all",
-      material: "all"
-    },
+    filters: emptyFilters(),
+    expandedFilterGroups: new Set(["series", "size"]),
     lastFocus: null
   };
+
+  if (initialSubcategory && initialSubcategory !== "all") {
+    state.filters.subcategory = [initialSubcategory];
+  }
+
+  const FILTER_LABELS = {
+    subcategory: "Product Type",
+    series: "Series",
+    size: "Size",
+    connection: "Connection",
+    material: "Body Material"
+  };
+
+  const SORT_OPTIONS = [
+    { value: "best-match", label: "Best Match" },
+    { value: "id", label: "Model Number" },
+    { value: "subcategory", label: "Product Type" },
+    { value: "size", label: "Size" },
+    { value: "connection", label: "Connection" },
+    { value: "pmo", label: "Max Rating" }
+  ];
 
   function text(value) {
     const safeValue = String(value == null ? "" : value).trim();
@@ -96,6 +118,29 @@
     return number ? Number(number[0]) : 0;
   }
 
+  function selectedValues(key) {
+    const current = state.filters[key];
+    if (Array.isArray(current)) return current;
+    if (!current || current === "all") return [];
+    return [current];
+  }
+
+  function productMatchesSelectedFilters(product, excludedKey) {
+    return config.filters.every(function (filter) {
+      if (filter.key === excludedKey) return true;
+      const selected = selectedValues(filter.key);
+      return !selected.length || selected.includes(product[filter.key]);
+    });
+  }
+
+  function filterOptionCount(key, value) {
+    return allCategoryProducts.filter(function (product) {
+      return core.productMatches(product, state.search)
+        && product[key] === value
+        && productMatchesSelectedFilters(product, key);
+    }).length;
+  }
+
   function compareProducts(left, right) {
     if (state.sortKey === "best-match") return 0;
 
@@ -115,11 +160,7 @@
   function filteredProducts() {
     return allCategoryProducts
       .filter(function (product) {
-        if (!core.productMatches(product, state.search)) return false;
-        return config.filters.every(function (filter) {
-          const selected = state.filters[filter.key] || "all";
-          return selected === "all" || product[filter.key] === selected;
-        });
+        return core.productMatches(product, state.search) && productMatchesSelectedFilters(product);
       })
       .slice()
       .sort(compareProducts);
@@ -136,7 +177,7 @@
 
   function activeFilterCount() {
     return config.filters.reduce(function (count, filter) {
-      return count + (state.filters[filter.key] !== "all" ? 1 : 0);
+      return count + selectedValues(filter.key).length;
     }, 0);
   }
 
@@ -145,24 +186,71 @@
     dom.filterLabel.textContent = count ? "Filter (" + count + ")" : "Filter";
   }
 
-  function renderFilterFields() {
-    dom.filters.innerHTML = config.filters.map(function (filter) {
-      const options = core.uniqueValues(allCategoryProducts, filter.key);
-      const currentValue = state.filters[filter.key] || "all";
-      if (options.length < 2 && filter.key !== "subcategory") return "";
+  function filterLabel(filter) {
+    return FILTER_LABELS[filter.key] || filter.label;
+  }
 
-      const optionMarkup = ["<option value=\"all\">All</option>"]
-        .concat(options.map(function (option) {
-          const selected = currentValue === option ? " selected" : "";
-          return "<option value=\"" + core.escapeHtml(option) + "\"" + selected + ">" + core.escapeHtml(titleCase(option)) + "</option>";
-        }))
-        .join("");
-
-      return "<label class=\"catalog-filter-field\">"
-        + "<span>" + core.escapeHtml(filter.label) + "</span>"
-        + "<select data-catalog-filter=\"" + core.escapeHtml(filter.key) + "\">" + optionMarkup + "</select>"
-        + "</label>";
+  function sortOptionMarkup() {
+    return SORT_OPTIONS.map(function (option) {
+      const selected = option.value === state.sortKey ? " selected" : "";
+      return "<option value=\"" + option.value + "\"" + selected + ">" + option.label + "</option>";
     }).join("");
+  }
+
+  function renderSortSection() {
+    const isOpen = state.expandedFilterGroups.has("sort");
+    const symbol = isOpen ? "−" : "+";
+
+    return "<section class=\"catalog-filter-accordion" + (isOpen ? " is-open" : "") + "\">"
+      + "<button class=\"catalog-filter-accordion-toggle\" type=\"button\" data-filter-accordion=\"sort\" aria-expanded=\"" + String(isOpen) + "\">"
+      + "<span class=\"catalog-filter-accordion-name\">Sort Results</span>"
+      + "<span class=\"catalog-filter-accordion-symbol\" aria-hidden=\"true\">" + symbol + "</span>"
+      + "</button>"
+      + "<div class=\"catalog-filter-options\"><div class=\"catalog-filter-sort-options\">"
+      + "<select id=\"drawerCatalogSort\" aria-label=\"Sort products\">" + sortOptionMarkup() + "</select>"
+      + "<p class=\"catalog-filter-sort-help\">For reverse order, tap the matching column header in Table View.</p>"
+      + "</div></div>"
+      + "</section>";
+  }
+
+  function renderFilterFields() {
+    const groups = config.filters.map(function (filter) {
+      const options = core.uniqueValues(allCategoryProducts, filter.key);
+      const selected = selectedValues(filter.key);
+      const isOpen = state.expandedFilterGroups.has(filter.key);
+
+      if (!options.length) return "";
+
+      const optionsMarkup = options.map(function (option) {
+        const checked = selected.includes(option) ? " checked" : "";
+        const total = filterOptionCount(filter.key, option);
+
+        return "<label class=\"catalog-filter-option\">"
+          + "<input type=\"checkbox\" data-catalog-filter=\"" + core.escapeHtml(filter.key) + "\" data-filter-value=\"" + core.escapeHtml(option) + "\"" + checked + " />"
+          + "<span class=\"catalog-filter-checkbox\" aria-hidden=\"true\"></span>"
+          + "<span class=\"catalog-filter-option-label\">" + core.escapeHtml(titleCase(option)) + "</span>"
+          + "<span class=\"catalog-filter-option-total\">(" + total + ")</span>"
+          + "</label>";
+      }).join("");
+
+      return "<section class=\"catalog-filter-accordion" + (isOpen ? " is-open" : "") + "\">"
+        + "<button class=\"catalog-filter-accordion-toggle\" type=\"button\" data-filter-accordion=\"" + core.escapeHtml(filter.key) + "\" aria-expanded=\"" + String(isOpen) + "\">"
+        + "<span class=\"catalog-filter-accordion-name\">" + core.escapeHtml(filterLabel(filter))
+        + (selected.length ? "<b class=\"catalog-filter-accordion-count\">" + selected.length + "</b>" : "")
+        + "</span>"
+        + "<span class=\"catalog-filter-accordion-symbol\" aria-hidden=\"true\">" + (isOpen ? "−" : "+") + "</span>"
+        + "</button>"
+        + "<div class=\"catalog-filter-options\">" + optionsMarkup + "</div>"
+        + "</section>";
+    }).join("");
+
+    dom.filters.innerHTML = renderSortSection() + groups;
+  }
+
+  function syncSortControls() {
+    if (dom.sort && dom.sort.value !== state.sortKey) dom.sort.value = state.sortKey;
+    const drawerSort = dom.filters.querySelector("#drawerCatalogSort");
+    if (drawerSort && drawerSort.value !== state.sortKey) drawerSort.value = state.sortKey;
   }
 
   function sortHeader(label, key) {
@@ -233,6 +321,7 @@
 
     dom.resultCount.textContent = products.length + " product" + (products.length === 1 ? "" : "s");
     updateFilterLabel();
+    syncSortControls();
 
     if (!products.length) {
       const colspan = config.tableColumns.length + 4;
@@ -245,6 +334,11 @@
     dom.tableBody.innerHTML = currentProducts.map(tableRow).join("");
     dom.list.innerHTML = currentProducts.map(gridCard).join("");
     renderPagination(products);
+  }
+
+  function refreshFilterResults() {
+    renderFilterFields();
+    renderResults();
   }
 
   function setView(view) {
@@ -263,6 +357,13 @@
     document.body.classList.toggle("catalog-filter-open", Boolean(open));
     if (dom.filterDrawer) dom.filterDrawer.setAttribute("aria-hidden", String(!open));
     if (dom.openFilters) dom.openFilters.setAttribute("aria-expanded", String(Boolean(open)));
+
+    if (open) {
+      window.setTimeout(function () {
+        const closeButton = dom.filterDrawer.querySelector("[data-close-catalog-filters]");
+        if (closeButton) closeButton.focus();
+      }, 50);
+    }
   }
 
   function updateSearch(value) {
@@ -270,23 +371,19 @@
     state.page = 1;
     if (dom.filterSearch && dom.filterSearch.value !== state.search) dom.filterSearch.value = state.search;
     if (dom.headerSearch && dom.headerSearch.value !== state.search) dom.headerSearch.value = state.search;
-    renderResults();
+    refreshFilterResults();
   }
 
-  function resetFilters() {
-    state.search = "";
+  function clearFilters() {
     state.page = 1;
-    state.sortKey = config.defaultSort || "best-match";
+    state.filters = emptyFilters();
+    refreshFilterResults();
+  }
+
+  function setSort(key) {
+    state.sortKey = key;
     state.sortDirection = "asc";
-
-    config.filters.forEach(function (filter) {
-      state.filters[filter.key] = filter.key === "subcategory" ? initialSubcategory : "all";
-    });
-
-    if (dom.filterSearch) dom.filterSearch.value = "";
-    if (dom.headerSearch) dom.headerSearch.value = "";
-    if (dom.sort) dom.sort.value = state.sortKey;
-    renderFilterFields();
+    state.page = 1;
     renderTableHead();
     renderResults();
   }
@@ -300,7 +397,6 @@
     }
 
     state.page = 1;
-    if (dom.sort) dom.sort.value = state.sortKey;
     renderTableHead();
     renderResults();
   }
@@ -397,21 +493,39 @@
   if (dom.headerSearch) dom.headerSearch.addEventListener("input", function () { updateSearch(dom.headerSearch.value); });
   if (dom.filterSearch) dom.filterSearch.addEventListener("input", function () { updateSearch(dom.filterSearch.value); });
 
-  dom.filters.addEventListener("change", function (event) {
-    const control = event.target.closest("[data-catalog-filter]");
-    if (!control) return;
-    state.filters[control.getAttribute("data-catalog-filter")] = control.value;
-    state.page = 1;
-    renderResults();
+  dom.filters.addEventListener("click", function (event) {
+    const toggle = event.target.closest("[data-filter-accordion]");
+    if (!toggle) return;
+
+    const key = toggle.getAttribute("data-filter-accordion");
+    if (state.expandedFilterGroups.has(key)) state.expandedFilterGroups.delete(key);
+    else state.expandedFilterGroups.add(key);
+    renderFilterFields();
   });
 
-  if (dom.sort) dom.sort.addEventListener("change", function () {
-    state.sortKey = dom.sort.value;
-    state.sortDirection = "asc";
+  dom.filters.addEventListener("change", function (event) {
+    const drawerSort = event.target.closest("#drawerCatalogSort");
+    if (drawerSort) {
+      setSort(drawerSort.value);
+      return;
+    }
+
+    const control = event.target.closest("[data-catalog-filter]");
+    if (!control) return;
+
+    const key = control.getAttribute("data-catalog-filter");
+    const value = control.getAttribute("data-filter-value");
+    const selected = new Set(selectedValues(key));
+
+    if (control.checked) selected.add(value);
+    else selected.delete(value);
+
+    state.filters[key] = Array.from(selected);
     state.page = 1;
-    renderTableHead();
-    renderResults();
+    refreshFilterResults();
   });
+
+  if (dom.sort) dom.sort.addEventListener("change", function () { setSort(dom.sort.value); });
 
   if (dom.pageSize) dom.pageSize.addEventListener("change", function () {
     state.pageSize = Number(dom.pageSize.value) || config.pageSize || 25;
@@ -419,11 +533,12 @@
     renderResults();
   });
 
-  dom.openFilters.addEventListener("click", function () { setFilterDrawer(true); });
-  dom.closeFilters.addEventListener("click", function () { setFilterDrawer(false); });
-  dom.filterBackdrop.addEventListener("click", function () { setFilterDrawer(false); });
-  dom.applyFilters.addEventListener("click", function () { setFilterDrawer(false); });
-  dom.resetFilters.addEventListener("click", resetFilters);
+  if (dom.openFilters) dom.openFilters.addEventListener("click", function () { setFilterDrawer(true); });
+  dom.closeFilters.forEach(function (button) {
+    button.addEventListener("click", function () { setFilterDrawer(false); });
+  });
+  if (dom.filterBackdrop) dom.filterBackdrop.addEventListener("click", function () { setFilterDrawer(false); });
+  if (dom.resetFilters) dom.resetFilters.addEventListener("click", clearFilters);
   dom.previousPage.addEventListener("click", function () { updatePage(-1); });
   dom.nextPage.addEventListener("click", function () { updatePage(1); });
 
