@@ -1,0 +1,59 @@
+/* Shared sort-direction controls inside the Filter & Sort panel. */
+
+.catalog-sort-direction-control {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.catalog-sort-direction-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 10px;
+  color: #343a42;
+  background: #fff;
+  border: 1px solid #cfd5db;
+  border-radius: 2px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.catalog-sort-direction-button:hover:not(:disabled) {
+  border-color: #e1242c;
+}
+
+.catalog-sort-direction-button.is-active {
+  color: #fff;
+  background: #e1242c;
+  border-color: #e1242c;
+}
+
+.catalog-sort-direction-button:disabled {
+  color: #9ba4ad;
+  background: #f3f5f6;
+  border-color: #e1e5e8;
+  cursor: not-allowed;
+}
+
+.catalog-sort-direction-symbol {
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.catalog-sort-direction-button:focus-visible {
+  outline: 3px solid rgba(225, 36, 44, .34);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  .catalog-sort-direction-button {
+    min-height: 46px;
+    font-size: 13px;
+  }
+}
