@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="catalog-results-design.css?v=results-layout-1" />
   <link rel="stylesheet" href="catalog-results-mobile-table.css?v=results-table-swipe-1" />
   <link rel="stylesheet" href="catalog-view-state.css?v=view-state-1" />
+  <link rel="stylesheet" href="catalog-filter-panel.css?v=filter-panel-1" />
 </head>
 <body class="catalog-page">
   <div id="siteHeaderMount"></div>
@@ -59,23 +60,20 @@
       </label>
     </section>
 
-    <aside id="catalogFilters" class="catalog-filter-drawer" aria-label="Catalog filters" aria-hidden="true">
-      <div class="catalog-filter-drawer-heading">
-        <div><p class="catalog-kicker">Refine results</p><h2>Filters</h2></div>
-        <button id="closeCatalogFilters" class="catalog-drawer-close" type="button" aria-label="Close filters">×</button>
+    <aside id="catalogFilters" class="catalog-filter-drawer" role="dialog" aria-modal="true" aria-labelledby="catalogFilterPanelTitle" aria-label="Filter and sort products" aria-hidden="true">
+      <header class="catalog-filter-panel-heading">
+        <h2 id="catalogFilterPanelTitle">Filter &amp; Sort</h2>
+        <button class="catalog-filter-panel-close" type="button" data-close-catalog-filters aria-label="Close filter panel">×</button>
+      </header>
+
+      <div class="catalog-filter-panel-scroll">
+        <div id="catalogFilterFields"></div>
       </div>
 
-      <label class="catalog-filter-field catalog-filter-search">
-        <span>Search within results</span>
-        <input id="catalogSearch" type="search" placeholder="Model, series, size..." autocomplete="off" />
-      </label>
-
-      <div id="catalogFilterFields"></div>
-
-      <div class="catalog-filter-actions">
-        <button id="applyCatalogFilters" class="btn btn-primary" type="button">Apply Filters</button>
-        <button id="resetCatalogFilters" class="btn btn-secondary" type="button">Reset</button>
-      </div>
+      <footer class="catalog-filter-panel-actions">
+        <button id="resetCatalogFilters" class="catalog-filter-clear" type="button">Clear All</button>
+        <button id="closeCatalogFilters" class="catalog-filter-done" type="button" data-close-catalog-filters>Close</button>
+      </footer>
     </aside>
     <div id="catalogFilterBackdrop" class="catalog-filter-backdrop" aria-hidden="true"></div>
 
@@ -118,7 +116,7 @@
   <script src="catalog-config.js"></script>
   <script src="quantity-stepper.js?v=qty-stepper-1"></script>
   <script src="site-header.js?v=global-mobile-nav-3"></script>
-  <script src="catalog-page.js?v=results-layout-1"></script>
+  <script src="catalog-page.js?v=filter-panel-1"></script>
   <script src="catalog-view-guard.js?v=view-guard-1"></script>
 </body>
 </html>
