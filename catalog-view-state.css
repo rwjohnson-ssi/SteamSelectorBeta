@@ -1,0 +1,17 @@
+/*
+  Shared catalog view state.
+  Exactly one results presentation may be visible at a time.
+*/
+
+.catalog-page #catalogTableWrap[hidden],
+.catalog-page #catalogList[hidden] {
+  display: none !important;
+}
+
+.catalog-page #catalogTableWrap:not([hidden]) {
+  display: block;
+}
+
+.catalog-page #catalogList:not([hidden]) {
+  display: grid;
+}
