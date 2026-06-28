@@ -1,8 +1,8 @@
 /*
-  One shared catalog controller for every product category.
+  One shared catalog-results controller for every SteamSelector Beta category.
   Route examples:
     category.html?id=steam-traps
-    category.html?id=regulators&type=pilot-operated
+    category.html?id=steam-traps&type=inverted-bucket
 */
 (function () {
   "use strict";
@@ -20,18 +20,25 @@
   const category = categoryApi.getCategoryById(requestedCategoryId) || categoryApi.getCategoryById("steam-traps");
   const config = configApi.getCatalogConfig(category.id);
   const allCategoryProducts = productApi.getProductsByCategory(category.id);
+  const initialSubcategory = query.get("type") || "all";
 
   const dom = {
     title: document.getElementById("categoryTitle"),
-    description: document.getElementById("categoryDescription"),
+    breadcrumbs: document.getElementById("breadcrumbs"),
+    resultCount: document.getElementById("catalogResultCount"),
+    filterLabel: document.getElementById("catalogFilterLabel"),
+    filterDrawer: document.getElementById("catalogFilters"),
+    filterBackdrop: document.getElementById("catalogFilterBackdrop"),
+    openFilters: document.getElementById("openCatalogFilters"),
+    closeFilters: document.getElementById("closeCatalogFilters"),
     filters: document.getElementById("catalogFilterFields"),
-    search: document.getElementById("catalogSearch"),
+    filterSearch: document.getElementById("catalogSearch"),
+    headerSearch: document.getElementById("catalogHeaderSearchInput"),
+    headerSearchForm: document.getElementById("catalogHeaderSearchForm"),
     applyFilters: document.getElementById("applyCatalogFilters"),
     resetFilters: document.getElementById("resetCatalogFilters"),
-    mobileFilters: document.getElementById("openCatalogFilters"),
-    closeFilters: document.getElementById("closeCatalogFilters"),
-    filterBackdrop: document.getElementById("catalogFilterBackdrop"),
-    resultCount: document.getElementById("catalogResultCount"),
+    sort: document.getElementById("catalogSort"),
+    pageSize: document.getElementById("catalogPageSize"),
     tableWrap: document.getElementById("catalogTableWrap"),
     tableHead: document.getElementById("catalogTableHead"),
     tableBody: document.getElementById("catalogTableBody"),
@@ -47,14 +54,15 @@
     modalContent: document.getElementById("quickViewContent")
   };
 
-  if (!dom.title || !dom.filters || !dom.search || !dom.tableHead || !dom.tableBody || !dom.list || !dom.modal || !dom.modalContent) return;
+  if (!dom.title || !dom.resultCount || !dom.filters || !dom.tableHead || !dom.tableBody || !dom.list || !dom.modal || !dom.modalContent) return;
 
-  const initialSubcategory = query.get("type") || "all";
   const state = {
     view: config.defaultView || "table",
     page: 1,
-    pageSize: config.pageSize || 10,
+    pageSize: config.pageSize || 25,
     search: "",
+    sortKey: config.defaultSort || "best-match",
+    sortDirection: "asc",
     filters: {
       subcategory: initialSubcategory,
       series: "all",
@@ -78,15 +86,47 @@
       .join(" ");
   }
 
-  function filteredProducts() {
-    return allCategoryProducts.filter(function (product) {
-      if (!core.productMatches(product, state.search)) return false;
+  function numericValue(value) {
+    const raw = String(value || "");
+    const mixedFraction = raw.match(/(\d+)\s*-\s*(\d+)\s*\/\s*(\d+)/);
+    if (mixedFraction) return Number(mixedFraction[1]) + Number(mixedFraction[2]) / Number(mixedFraction[3]);
+    const fraction = raw.match(/(\d+)\s*\/\s*(\d+)/);
+    if (fraction) return Number(fraction[1]) / Number(fraction[2]);
+    const number = raw.match(/[\d.]+/);
+    return number ? Number(number[0]) : 0;
+  }
 
-      return config.filters.every(function (filter) {
-        const selected = state.filters[filter.key] || "all";
-        return selected === "all" || product[filter.key] === selected;
+  function compareProducts(left, right) {
+    if (state.sortKey === "best-match") return 0;
+
+    let comparison = 0;
+    if (state.sortKey === "size" || state.sortKey === "pmo") {
+      comparison = numericValue(left[state.sortKey]) - numericValue(right[state.sortKey]);
+    } else {
+      comparison = String(left[state.sortKey] || "").localeCompare(String(right[state.sortKey] || ""), undefined, {
+        numeric: true,
+        sensitivity: "base"
       });
-    });
+    }
+
+    return state.sortDirection === "desc" ? comparison * -1 : comparison;
+  }
+
+  function filteredProducts() {
+    return allCategoryProducts
+      .filter(function (product) {
+        if (!core.productMatches(product, state.search)) return false;
+        return config.filters.every(function (filter) {
+          const selected = state.filters[filter.key] || "all";
+          return selected === "all" || product[filter.key] === selected;
+        });
+      })
+      .slice()
+      .sort(compareProducts);
+  }
+
+  function pageCount(products) {
+    return Math.max(1, Math.ceil(products.length / state.pageSize));
   }
 
   function visibleProducts(products) {
@@ -94,75 +134,82 @@
     return products.slice(start, start + state.pageSize);
   }
 
-  function pageCount(products) {
-    return Math.max(1, Math.ceil(products.length / state.pageSize));
+  function activeFilterCount() {
+    return config.filters.reduce(function (count, filter) {
+      return count + (state.filters[filter.key] !== "all" ? 1 : 0);
+    }, 0);
+  }
+
+  function updateFilterLabel() {
+    const count = activeFilterCount();
+    dom.filterLabel.textContent = count ? "Filter (" + count + ")" : "Filter";
   }
 
   function renderFilterFields() {
-    dom.filters.innerHTML = config.filters
-      .map(function (filter) {
-        const options = core.uniqueValues(allCategoryProducts, filter.key);
-        const currentValue = state.filters[filter.key] || "all";
-        const isUseful = options.length > 1;
+    dom.filters.innerHTML = config.filters.map(function (filter) {
+      const options = core.uniqueValues(allCategoryProducts, filter.key);
+      const currentValue = state.filters[filter.key] || "all";
+      if (options.length < 2 && filter.key !== "subcategory") return "";
 
-        if (!isUseful && filter.key !== "subcategory") return "";
+      const optionMarkup = ["<option value=\"all\">All</option>"]
+        .concat(options.map(function (option) {
+          const selected = currentValue === option ? " selected" : "";
+          return "<option value=\"" + core.escapeHtml(option) + "\"" + selected + ">" + core.escapeHtml(titleCase(option)) + "</option>";
+        }))
+        .join("");
 
-        const optionMarkup = ["<option value=\"all\">All</option>"]
-          .concat(options.map(function (option) {
-            const selected = currentValue === option ? " selected" : "";
-            return "<option value=\"" + core.escapeHtml(option) + "\"" + selected + ">" + core.escapeHtml(titleCase(option)) + "</option>";
-          }))
-          .join("");
+      return "<label class=\"catalog-filter-field\">"
+        + "<span>" + core.escapeHtml(filter.label) + "</span>"
+        + "<select data-catalog-filter=\"" + core.escapeHtml(filter.key) + "\">" + optionMarkup + "</select>"
+        + "</label>";
+    }).join("");
+  }
 
-        return "<label class=\"catalog-filter-field\">"
-          + "<span>" + core.escapeHtml(filter.label) + "</span>"
-          + "<select data-catalog-filter=\"" + core.escapeHtml(filter.key) + "\">" + optionMarkup + "</select>"
-          + "</label>";
-      })
-      .join("");
+  function sortHeader(label, key) {
+    const active = state.sortKey === key ? " is-active" : "";
+    return "<button class=\"results-column-button" + active + "\" type=\"button\" data-column-sort=\"" + key + "\">" + core.escapeHtml(label) + "</button>";
   }
 
   function renderTableHead() {
     dom.tableHead.innerHTML = "<tr>"
-      + "<th class=\"catalog-table-quick\"><span class=\"sr-only\">Quick View</span></th>"
-      + "<th class=\"catalog-table-image\">Image</th>"
-      + "<th>Model</th>"
-      + config.tableColumns.map(function (column) { return "<th>" + core.escapeHtml(column.label) + "</th>"; }).join("")
-      + "<th><span class=\"sr-only\">Product details</span></th>"
+      + "<th class=\"results-quick-column\">Quick View</th>"
+      + "<th class=\"results-image-column\">Image</th>"
+      + "<th class=\"results-model-column\">" + sortHeader("Model", "id") + "</th>"
+      + config.tableColumns.map(function (column) {
+          return "<th>" + (column.sortable ? sortHeader(column.label, column.key) : core.escapeHtml(column.label)) + "</th>";
+        }).join("")
+      + "<th class=\"results-action-column\"><span class=\"sr-only\">Product details</span></th>"
       + "</tr>";
   }
 
   function quickViewButton(product) {
-    return "<button class=\"catalog-quick-button\" type=\"button\" data-quick-view=\"" + core.escapeHtml(product.id) + "\" aria-label=\"Quick view " + core.escapeHtml(product.id) + "\">+</button>";
+    return "<button class=\"results-quick-view\" type=\"button\" data-quick-view=\"" + core.escapeHtml(product.id) + "\" aria-label=\"Quick view " + core.escapeHtml(product.id) + "\"><span class=\"results-eye-icon\" aria-hidden=\"true\"></span></button>";
   }
 
   function tableRow(product) {
-    const visual = core.renderProductVisual(product, category, "product-thumb");
-    const columnCells = config.tableColumns
-      .map(function (column) {
-        return "<td>" + core.escapeHtml(text(product[column.key])) + "</td>";
-      })
-      .join("");
+    const columns = config.tableColumns.map(function (column) {
+      return "<td>" + core.escapeHtml(text(product[column.key])) + "</td>";
+    }).join("");
 
     return "<tr>"
       + "<td>" + quickViewButton(product) + "</td>"
-      + "<td>" + visual + "</td>"
-      + "<td><a class=\"catalog-model-link\" href=\"" + core.productUrl(product) + "\">" + core.escapeHtml(product.id) + "</a><span class=\"mobile-product-summary\">" + core.escapeHtml(product.summary) + "</span></td>"
-      + columnCells
-      + "<td><a class=\"catalog-detail-link\" href=\"" + core.productUrl(product) + "\">Details</a></td>"
+      + "<td>" + core.renderProductVisual(product, category, "results-product-image") + "</td>"
+      + "<td><a class=\"results-model-link\" href=\"" + core.productUrl(product) + "\">" + core.escapeHtml(product.id) + "</a></td>"
+      + columns
+      + "<td><a class=\"results-detail-link\" href=\"" + core.productUrl(product) + "\" aria-label=\"View " + core.escapeHtml(product.id) + " details\">›</a></td>"
       + "</tr>";
   }
 
-  function card(product) {
-    return "<article class=\"catalog-card\">"
+  function gridCard(product) {
+    return "<article class=\"results-card\">"
       + quickViewButton(product)
-      + core.renderProductVisual(product, category, "product-thumb")
-      + "<div class=\"catalog-card-copy\">"
-      + "<div class=\"catalog-card-heading\"><a class=\"catalog-model-link\" href=\"" + core.productUrl(product) + "\">" + core.escapeHtml(product.id) + "</a><span class=\"catalog-card-series\">" + core.escapeHtml(product.series) + "</span></div>"
+      + core.renderProductVisual(product, category, "results-product-image")
+      + "<div class=\"results-card-copy\">"
+      + "<a class=\"results-model-link\" href=\"" + core.productUrl(product) + "\">" + core.escapeHtml(product.id) + "</a>"
       + "<p>" + core.escapeHtml(product.summary) + "</p>"
-      + "<div class=\"catalog-card-meta\"><span>" + core.escapeHtml(text(product.size)) + "</span><span>" + core.escapeHtml(text(product.connection)) + "</span><span>" + core.escapeHtml(text(product.material)) + "</span></div>"
+      + "<div class=\"results-card-meta\"><span>" + core.escapeHtml(text(product.size)) + "</span><span>" + core.escapeHtml(text(product.connection)) + "</span><span>" + core.escapeHtml(text(product.pmo)) + "</span></div>"
       + "</div>"
-      + "<a class=\"catalog-detail-link\" href=\"" + core.productUrl(product) + "\">Details ›</a>"
+      + "<div class=\"results-card-actions\"><span>" + core.escapeHtml(titleCase(product.subcategory)) + "</span><a class=\"results-detail-link\" href=\"" + core.productUrl(product) + "\" aria-label=\"View " + core.escapeHtml(product.id) + " details\">›</a></div>"
       + "</article>";
   }
 
@@ -171,8 +218,8 @@
     const start = products.length ? (state.page - 1) * state.pageSize + 1 : 0;
     const end = Math.min(state.page * state.pageSize, products.length);
 
-    dom.paginationSummary.textContent = "Showing " + start + "–" + end + " of " + products.length;
-    dom.pageIndicator.textContent = "Page " + state.page + " of " + totalPages;
+    dom.paginationSummary.textContent = "Showing " + start + " to " + end + " of " + products.length + " products";
+    dom.pageIndicator.textContent = String(state.page);
     dom.previousPage.disabled = state.page <= 1;
     dom.nextPage.disabled = state.page >= totalPages;
     dom.pagination.hidden = products.length <= state.pageSize;
@@ -184,23 +231,24 @@
     if (state.page > totalPages) state.page = totalPages;
     const currentProducts = visibleProducts(products);
 
-    dom.resultCount.textContent = products.length + " matching product" + (products.length === 1 ? "" : "s");
+    dom.resultCount.textContent = products.length + " product" + (products.length === 1 ? "" : "s");
+    updateFilterLabel();
 
     if (!products.length) {
-      const empty = "<tr><td colspan=\"" + (config.tableColumns.length + 4) + "\"><div class=\"catalog-empty-state\">No products match the current search and filters.</div></td></tr>";
-      dom.tableBody.innerHTML = empty;
+      const colspan = config.tableColumns.length + 4;
+      dom.tableBody.innerHTML = "<tr><td colspan=\"" + colspan + "\"><div class=\"catalog-empty-state\">No products match the current search and filters.</div></td></tr>";
       dom.list.innerHTML = "<div class=\"catalog-empty-state\">No products match the current search and filters.</div>";
       renderPagination(products);
       return;
     }
 
     dom.tableBody.innerHTML = currentProducts.map(tableRow).join("");
-    dom.list.innerHTML = currentProducts.map(card).join("");
+    dom.list.innerHTML = currentProducts.map(gridCard).join("");
     renderPagination(products);
   }
 
-  function setView(nextView) {
-    state.view = nextView === "list" ? "list" : "table";
+  function setView(view) {
+    state.view = view === "list" ? "list" : "table";
     dom.tableWrap.hidden = state.view !== "table";
     dom.list.hidden = state.view !== "list";
 
@@ -211,12 +259,66 @@
     });
   }
 
+  function setFilterDrawer(open) {
+    document.body.classList.toggle("catalog-filter-open", Boolean(open));
+    if (dom.filterDrawer) dom.filterDrawer.setAttribute("aria-hidden", String(!open));
+    if (dom.openFilters) dom.openFilters.setAttribute("aria-expanded", String(Boolean(open)));
+  }
+
+  function updateSearch(value) {
+    state.search = String(value || "").trim();
+    state.page = 1;
+    if (dom.filterSearch && dom.filterSearch.value !== state.search) dom.filterSearch.value = state.search;
+    if (dom.headerSearch && dom.headerSearch.value !== state.search) dom.headerSearch.value = state.search;
+    renderResults();
+  }
+
+  function resetFilters() {
+    state.search = "";
+    state.page = 1;
+    state.sortKey = config.defaultSort || "best-match";
+    state.sortDirection = "asc";
+
+    config.filters.forEach(function (filter) {
+      state.filters[filter.key] = filter.key === "subcategory" ? initialSubcategory : "all";
+    });
+
+    if (dom.filterSearch) dom.filterSearch.value = "";
+    if (dom.headerSearch) dom.headerSearch.value = "";
+    if (dom.sort) dom.sort.value = state.sortKey;
+    renderFilterFields();
+    renderTableHead();
+    renderResults();
+  }
+
+  function sortBy(key) {
+    if (state.sortKey === key) {
+      state.sortDirection = state.sortDirection === "asc" ? "desc" : "asc";
+    } else {
+      state.sortKey = key;
+      state.sortDirection = "asc";
+    }
+
+    state.page = 1;
+    if (dom.sort) dom.sort.value = state.sortKey;
+    renderTableHead();
+    renderResults();
+  }
+
+  function updatePage(delta) {
+    const products = filteredProducts();
+    const nextPage = Math.min(Math.max(1, state.page + delta), pageCount(products));
+    if (nextPage === state.page) return;
+
+    state.page = nextPage;
+    renderResults();
+    document.querySelector(".results-table-region").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function filterSummary(product) {
-    return config.tableColumns
-      .map(function (column) {
-        return "<div class=\"quick-view-spec\"><span>" + core.escapeHtml(column.label) + "</span><strong>" + core.escapeHtml(text(product[column.key])) + "</strong></div>";
-      })
-      .join("");
+    return config.tableColumns.map(function (column) {
+      return "<div class=\"quick-view-spec\"><span>" + core.escapeHtml(column.label) + "</span><strong>" + core.escapeHtml(text(product[column.key])) + "</strong></div>";
+    }).join("");
   }
 
   function quickViewQuantityInput() {
@@ -246,14 +348,8 @@
       + "<p class=\"quick-view-summary\">" + core.escapeHtml(product.summary) + "</p>"
       + "<p class=\"quick-view-description\">" + core.escapeHtml(product.description) + "</p>"
       + "<div class=\"quick-view-specs\">" + filterSummary(product) + "</div>"
-      + "<div class=\"quick-view-order-row\">"
-      + quantityApi.markup("quickViewQty", "Quantity")
-      + "<p class=\"quick-view-quote-status\" data-quick-quote-status role=\"status\" aria-live=\"polite\"></p>"
-      + "</div>"
-      + "<div class=\"quick-view-actions\">"
-      + "<button class=\"btn btn-primary\" type=\"button\" data-add-quote=\"" + core.escapeHtml(product.id) + "\">Add 1 to Quote</button>"
-      + "<a class=\"btn btn-secondary\" href=\"" + core.productUrl(product) + "\">View Full Product Page</a>"
-      + "</div>"
+      + "<div class=\"quick-view-order-row\">" + quantityApi.markup("quickViewQty", "Quantity") + "<p class=\"quick-view-quote-status\" data-quick-quote-status role=\"status\" aria-live=\"polite\"></p></div>"
+      + "<div class=\"quick-view-actions\"><button class=\"btn btn-primary\" type=\"button\" data-add-quote=\"" + core.escapeHtml(product.id) + "\">Add 1 to Quote</button><a class=\"btn btn-secondary\" href=\"" + core.productUrl(product) + "\">View Full Product Page</a></div>"
       + "</div>"
       + "</div>";
 
@@ -273,46 +369,33 @@
     if (state.lastFocus && typeof state.lastFocus.focus === "function") state.lastFocus.focus();
   }
 
-  function setFilterDrawer(open) {
-    document.body.classList.toggle("catalog-filter-open", Boolean(open));
-  }
+  const child = category.children.find(function (entry) { return entry.id === initialSubcategory; });
+  const pageTitle = child && initialSubcategory !== "all" ? child.title + " " + category.title : category.title;
+  document.title = pageTitle + " | SteamSelector Beta";
+  dom.title.textContent = pageTitle;
+  core.renderBreadcrumbs([
+    { label: "Home", href: "index.html" },
+    { label: category.title, href: core.categoryUrl(category.id) },
+    ...(child && initialSubcategory !== "all" ? [{ label: child.title }] : [])
+  ]);
 
-  function resetFilters() {
-    state.search = "";
-    state.page = 1;
-    config.filters.forEach(function (filter) {
-      state.filters[filter.key] = filter.key === "subcategory" ? initialSubcategory : "all";
-    });
-    dom.search.value = "";
-    renderFilterFields();
-    renderResults();
-  }
-
-  function updatePage(delta) {
-    const products = filteredProducts();
-    const nextPage = Math.min(Math.max(1, state.page + delta), pageCount(products));
-    if (nextPage === state.page) return;
-    state.page = nextPage;
-    renderResults();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  dom.title.textContent = category.title;
-  dom.description.textContent = category.description;
-  document.title = category.title + " | SteamSelector Beta";
-  core.renderBreadcrumbs([{ label: "Home", href: "index.html" }, { label: category.title }]);
+  if (dom.sort) dom.sort.value = state.sortKey;
+  if (dom.pageSize) dom.pageSize.value = String(state.pageSize);
   renderFilterFields();
   renderTableHead();
   renderResults();
   setView(config.defaultView);
-
   quantityApi.bind(document);
 
-  dom.search.addEventListener("input", function () {
-    state.search = dom.search.value.trim();
-    state.page = 1;
-    renderResults();
-  });
+  if (dom.headerSearchForm) {
+    dom.headerSearchForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      updateSearch(dom.headerSearch ? dom.headerSearch.value : "");
+    });
+  }
+
+  if (dom.headerSearch) dom.headerSearch.addEventListener("input", function () { updateSearch(dom.headerSearch.value); });
+  if (dom.filterSearch) dom.filterSearch.addEventListener("input", function () { updateSearch(dom.filterSearch.value); });
 
   dom.filters.addEventListener("change", function (event) {
     const control = event.target.closest("[data-catalog-filter]");
@@ -322,23 +405,30 @@
     renderResults();
   });
 
-  dom.applyFilters.addEventListener("click", function () {
+  if (dom.sort) dom.sort.addEventListener("change", function () {
+    state.sortKey = dom.sort.value;
+    state.sortDirection = "asc";
     state.page = 1;
+    renderTableHead();
     renderResults();
-    setFilterDrawer(false);
   });
 
-  dom.resetFilters.addEventListener("click", resetFilters);
-  dom.mobileFilters.addEventListener("click", function () { setFilterDrawer(true); });
+  if (dom.pageSize) dom.pageSize.addEventListener("change", function () {
+    state.pageSize = Number(dom.pageSize.value) || config.pageSize || 25;
+    state.page = 1;
+    renderResults();
+  });
+
+  dom.openFilters.addEventListener("click", function () { setFilterDrawer(true); });
   dom.closeFilters.addEventListener("click", function () { setFilterDrawer(false); });
   dom.filterBackdrop.addEventListener("click", function () { setFilterDrawer(false); });
+  dom.applyFilters.addEventListener("click", function () { setFilterDrawer(false); });
+  dom.resetFilters.addEventListener("click", resetFilters);
   dom.previousPage.addEventListener("click", function () { updatePage(-1); });
   dom.nextPage.addEventListener("click", function () { updatePage(1); });
 
   dom.viewButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      setView(button.getAttribute("data-catalog-view"));
-    });
+    button.addEventListener("click", function () { setView(button.getAttribute("data-catalog-view")); });
   });
 
   document.addEventListener("steamselector:quantity-change", function (event) {
@@ -349,6 +439,12 @@
     const quickButton = event.target.closest("[data-quick-view]");
     if (quickButton) {
       openQuickView(quickButton.getAttribute("data-quick-view"), quickButton);
+      return;
+    }
+
+    const sortButton = event.target.closest("[data-column-sort]");
+    if (sortButton) {
+      sortBy(sortButton.getAttribute("data-column-sort"));
       return;
     }
 
@@ -366,11 +462,10 @@
       const quantity = quantityApi.normalize(quantityInput ? quantityInput.value : 1);
       core.quote.add(product, quantity);
 
-      const confirmation = dom.modal.querySelector("[data-quick-quote-status]");
       const message = quantity === 1
         ? product.id + " was added to the quote list."
         : quantity + " × " + product.id + " were added to the quote list.";
-
+      const confirmation = dom.modal.querySelector("[data-quick-quote-status]");
       if (confirmation) confirmation.textContent = message;
       dom.status.textContent = message;
     }
