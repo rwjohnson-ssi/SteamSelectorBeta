@@ -1,0 +1,152 @@
+/*
+  Phone-first Quick View presentation.
+  The modal becomes a compact bottom sheet with a scrollable detail area and
+  an always-accessible quote action area.
+*/
+
+.quick-view-order-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.quick-view-quote-status {
+  min-height: 18px;
+  margin: 0;
+  color: #177245;
+  font-size: 12px;
+  font-weight: 750;
+  text-align: right;
+}
+
+@media (max-width: 740px) {
+  .catalog-page .quick-view-modal {
+    align-items: end;
+    padding: 0;
+  }
+
+  .catalog-page .quick-view-dialog {
+    width: 100%;
+    max-height: min(84dvh, 720px);
+    overflow: hidden;
+    border-radius: 18px 18px 0 0;
+    border-bottom: 0;
+  }
+
+  .catalog-page .quick-view-close {
+    top: 10px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    box-shadow: 0 4px 12px rgba(10, 13, 17, .14);
+  }
+
+  .catalog-page .quick-view-content {
+    display: block;
+    max-height: min(84dvh, 720px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .catalog-page .quick-view-media {
+    min-height: 118px;
+    padding: 14px 62px 14px 18px;
+    border-right: 0;
+    border-bottom: 1px solid #d4dbe2;
+  }
+
+  .catalog-page .quick-view-media .product-hero-visual {
+    width: 88px;
+    height: 88px;
+    border-radius: 10px;
+  }
+
+  .catalog-page .quick-view-media .product-hero-visual.product-visual-fallback .product-visual-icon {
+    min-width: 48px;
+    height: 48px;
+    font-size: 16px;
+  }
+
+  .catalog-page .quick-view-media .product-hero-visual.product-visual-fallback small {
+    max-width: 76px;
+    margin-top: 4px;
+    font-size: 10px;
+  }
+
+  .catalog-page .quick-view-copy {
+    padding: 17px 16px 0;
+  }
+
+  .catalog-page .quick-view-copy h2 {
+    font-size: 27px;
+    line-height: 1.05;
+  }
+
+  .catalog-page .quick-view-summary {
+    margin-top: 8px;
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .catalog-page .quick-view-description {
+    display: -webkit-box;
+    margin-top: 7px;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.38;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .catalog-page .quick-view-specs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 14px;
+  }
+
+  .catalog-page .quick-view-spec {
+    min-height: 54px;
+    padding: 8px 9px;
+  }
+
+  .catalog-page .quick-view-spec span {
+    font-size: 10px;
+  }
+
+  .catalog-page .quick-view-spec strong {
+    overflow: hidden;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .catalog-page .quick-view-order-row {
+    align-items: center;
+    margin-top: 14px;
+  }
+
+  .catalog-page .quick-view-quote-status {
+    max-width: 170px;
+    font-size: 11px;
+  }
+
+  .catalog-page .quick-view-actions {
+    position: sticky;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 14px -16px 0;
+    padding: 12px 16px max(16px, env(safe-area-inset-bottom));
+    background: #fff;
+    box-shadow: 0 -9px 18px rgba(17, 24, 39, .10);
+  }
+
+  .catalog-page .quick-view-actions .btn {
+    width: 100%;
+    min-height: 44px;
+  }
+}
