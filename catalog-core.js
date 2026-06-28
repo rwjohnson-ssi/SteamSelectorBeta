@@ -90,6 +90,13 @@
       });
   }
 
+  function productVisualTone(product) {
+    const material = String(product && product.material ? product.material : "").toLowerCase();
+    if (material.includes("stainless") || material.includes("aisi") || material.includes("steel")) return "product-visual-steel";
+    if (material.includes("bronze")) return "product-visual-bronze";
+    return "product-visual-blue";
+  }
+
   function renderProductVisual(product, category, className) {
     const safeClass = className || "product-thumb";
     const image = String(product && product.image ? product.image : "").trim();
@@ -100,7 +107,7 @@
       return "<div class=\"" + safeClass + "\"><img src=\"" + escapeHtml(image) + "\" alt=\"" + escapeHtml(product.id || "Product") + "\" loading=\"lazy\" /></div>";
     }
 
-    return "<div class=\"" + safeClass + " product-visual-fallback\" aria-label=\"" + escapeHtml(product.id || "Product") + "\">"
+    return "<div class=\"" + safeClass + " product-visual-fallback " + productVisualTone(product) + "\" aria-label=\"" + escapeHtml(product.id || "Product") + "\">"
       + "<span class=\"product-visual-icon\">" + escapeHtml(categoryIcon) + "</span>"
       + "<small>" + escapeHtml(label) + "</small>"
       + "</div>";
