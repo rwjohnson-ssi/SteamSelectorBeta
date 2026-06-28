@@ -1,4 +1,4 @@
-/* Shared SteamSelector Beta site header. */
+/* Shared SteamSelector Beta site header and mobile navigation. */
 (function () {
   "use strict";
 
@@ -12,6 +12,16 @@
 
   const isCatalogPage = document.body.classList.contains("catalog-page");
 
+  function ensureMobileNavigationStyles() {
+    if (document.getElementById("steamselector-mobile-bottom-nav-style")) return;
+
+    const stylesheet = document.createElement("link");
+    stylesheet.id = "steamselector-mobile-bottom-nav-style";
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = "mobile-bottom-nav.css?v=global-mobile-nav-1";
+    document.head.appendChild(stylesheet);
+  }
+
   function categoryMenu() {
     return categories.map(function (category) {
       const href = core.categoryUrl(category.id);
@@ -20,6 +30,7 @@
             return "<a href=\"" + core.categoryUrl(category.id, child.id) + "\">" + core.escapeHtml(child.title) + "</a>";
           }).join("") + "</div>"
         : "";
+
       return "<div class=\"nav-category\"><a href=\"" + href + "\">" + core.escapeHtml(category.title) + "</a>" + children + "</div>";
     }).join("");
   }
@@ -32,6 +43,64 @@
       + categories.map(function (category) {
           return "<a href=\"" + core.categoryUrl(category.id) + "\">" + core.escapeHtml(category.title) + "</a>";
         }).join("");
+  }
+
+  function icon(name) {
+    const common = "class=\"mobile-bottom-nav-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"";
+
+    if (name === "home") {
+      return "<svg " + common + "><path d=\"m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/></svg>";
+    }
+
+    if (name === "products") {
+      return "<svg " + common + "><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/></svg>";
+    }
+
+    if (name === "quote") {
+      return "<svg " + common + "><path d=\"M6 3h8l4 4v14H6z\"/><path d=\"M14 3v5h5M9 12h6M9 16h6\"/><circle cx=\"19\" cy=\"19\" r=\"3\"/></svg>";
+    }
+
+    if (name === "resources") {
+      return "<svg " + common + "><path d=\"M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 0 4 22zM20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5A2.5 2.5 0 0 1 20 22z\"/></svg>";
+    }
+
+    return "<svg " + common + "><circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c.8-4 3.4-6 8-6s7.2 2 8 6\"/></svg>";
+  }
+
+  function currentMobileSection() {
+    const page = core.currentFile().toLowerCase();
+
+    if (page === "index.html") return "home";
+    if (page === "quote.html") return "quote";
+    if (page === "guided-selection.html") return "resources";
+    if (page === "category.html" || page === "product.html" || page === "search.html") return "products";
+    return "";
+  }
+
+  function navLink(section, href, label, iconName, includesQuoteBadge) {
+    const active = currentMobileSection() === section;
+    const activeClass = active ? " is-active" : "";
+    const current = active ? " aria-current=\"page\"" : "";
+    const badge = includesQuoteBadge ? "<b class=\"mobile-bottom-nav-badge\" data-quote-count>0</b>" : "";
+
+    return "<a class=\"mobile-bottom-nav-link" + activeClass + "\" href=\"" + href + "\"" + current + ">"
+      + icon(iconName)
+      + "<span>" + label + "</span>"
+      + badge
+      + "</a>";
+  }
+
+  function renderMobileBottomNavigation() {
+    return "<nav class=\"mobile-bottom-nav\" aria-label=\"Mobile primary navigation\">"
+      + navLink("home", "index.html", "Home", "home", false)
+      + navLink("products", core.categoryUrl("steam-traps"), "Products", "products", false)
+      + navLink("quote", "quote.html", "Quote List", "quote", true)
+      + navLink("resources", "guided-selection.html", "Resources", "resources", false)
+      + "<button type=\"button\" aria-disabled=\"true\" aria-label=\"Account features are not available in this beta\">"
+      + icon("account")
+      + "<span>Account</span>"
+      + "</button>"
+      + "</nav>";
   }
 
   function renderStandardHeader() {
@@ -67,17 +136,13 @@
       + "<button type=\"submit\"><span aria-hidden=\"true\">⌕</span> Search</button>"
       + "</form>"
       + "<div class=\"catalog-header-mobile-menu\" data-mobile-panel hidden>" + mobileMenuLinks() + "</div>"
-      + "</header>"
-      + "<nav class=\"catalog-bottom-nav\" aria-label=\"Mobile primary navigation\">"
-      + "<a href=\"index.html\"><span class=\"bottom-nav-icon\">⌂</span><span>Home</span></a>"
-      + "<a class=\"is-active\" href=\"" + core.categoryUrl("steam-traps") + "\"><span class=\"bottom-nav-icon\">◉</span><span>Products</span></a>"
-      + "<a href=\"quote.html\"><span class=\"bottom-nav-icon\">▧</span><span>Quote List</span><b data-quote-count>0</b></a>"
-      + "<a href=\"guided-selection.html\"><span class=\"bottom-nav-icon\">▤</span><span>Resources</span></a>"
-      + "<button type=\"button\" class=\"bottom-nav-placeholder\" aria-label=\"Account features are not available in this beta\"><span class=\"bottom-nav-icon\">◯</span><span>Account</span></button>"
-      + "</nav>";
+      + "</header>";
   }
 
+  ensureMobileNavigationStyles();
   if (isCatalogPage) renderCatalogHeader(); else renderStandardHeader();
+  mount.insertAdjacentHTML("beforeend", renderMobileBottomNavigation());
+  document.body.classList.add("mobile-bottom-nav-enabled");
 
   const mobileButton = mount.querySelector("[data-mobile-menu]");
   const mobilePanel = mount.querySelector("[data-mobile-panel]");
