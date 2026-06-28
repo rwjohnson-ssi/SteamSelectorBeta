@@ -1,0 +1,5 @@
+.catalog-page .results-controls { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); max-width: 760px; gap: 22px; }
+.catalog-page .results-control { justify-content: flex-start; }
+.catalog-page .results-select-control { justify-content: space-between; }
+.catalog-page .results-select-control select { width: auto; flex: 1 1 auto; text-align: right; }
+@media (max-width: 760px) { .catalog-page .results-controls { grid-template-columns: minmax(0, 1fr) minmax(0, .88fr); max-width: none; gap: 12px; } .catalog-page .results-control { min-width: 0; } }
