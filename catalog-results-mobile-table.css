@@ -1,0 +1,81 @@
+/*
+  Mobile behavior for the shared catalog results table.
+  Keeps every row as a real horizontal table row; no columns are pinned or stacked.
+*/
+
+@media (max-width: 740px) {
+  .catalog-page .results-table-wrap {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
+  }
+
+  .catalog-page .results-table,
+  .catalog-page .results-table.catalog-table {
+    display: table !important;
+    width: max-content !important;
+    min-width: 810px !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+  }
+
+  .catalog-page .results-table thead {
+    display: table-header-group !important;
+  }
+
+  .catalog-page .results-table tbody {
+    display: table-row-group !important;
+  }
+
+  .catalog-page .results-table tr {
+    display: table-row !important;
+    width: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  .catalog-page .results-table th,
+  .catalog-page .results-table td,
+  .catalog-page .results-table th:nth-child(n),
+  .catalog-page .results-table td:nth-child(n),
+  .catalog-page .results-table td:last-child {
+    position: static !important;
+    inset: auto !important;
+    display: table-cell !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 8px 12px !important;
+    border-right: 1px solid #e8ebee !important;
+    border-bottom: 1px solid #e3e7eb !important;
+    box-shadow: none !important;
+    vertical-align: middle !important;
+    white-space: nowrap !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+
+  .catalog-page .results-table th {
+    height: 47px !important;
+    color: #fff !important;
+    background: #11161b !important;
+    font-size: 10px !important;
+  }
+
+  .catalog-page .results-table td {
+    height: 74px !important;
+    color: #151a20 !important;
+    background: #fff !important;
+    font-size: 12px !important;
+  }
+
+  .catalog-page .results-table tbody tr:hover td {
+    background: #fffafb !important;
+  }
+}
