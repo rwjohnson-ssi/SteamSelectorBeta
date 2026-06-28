@@ -1,20 +1,20 @@
-/*
-  Shared sort direction control for the catalog Filter & Sort panel.
-  The existing catalog controller owns the actual sorting state. This component
-  uses the same public controls to set ascending or descending reliably.
-*/
+/* Shared ascending and descending controls for the catalog Filter & Sort panel. */
 (function () {
   "use strict";
 
   const filterFields = document.getElementById("catalogFilterFields");
-  const topSort = document.getElementById("catalogSort");
-  if (!filterFields || !topSort) return;
+  if (!filterFields) return;
 
   let direction = "asc";
   let applyingDirection = false;
 
+  function drawerSort() {
+    return filterFields.querySelector("#drawerCatalogSort");
+  }
+
   function currentKey() {
-    return topSort.value || "best-match";
+    const select = drawerSort();
+    return select ? select.value : "best-match";
   }
 
   function supportsDirection() {
@@ -59,20 +59,16 @@
     }
   }
 
-  function resetToAscending() {
-    direction = "asc";
-    window.requestAnimationFrame(updateDirectionControl);
-  }
-
   function applyDirection(nextDirection) {
-    if (!supportsDirection()) return;
+    const select = drawerSort();
+    if (!select || !supportsDirection()) return;
 
-    const key = currentKey();
+    const key = select.value;
     applyingDirection = true;
 
-    /* Selecting the current sort field resets the shared controller to ascending. */
-    topSort.value = key;
-    topSort.dispatchEvent(new Event("change", { bubbles: true }));
+    /* The shared controller treats a drawer sort change as ascending. */
+    select.value = key;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
 
     if (nextDirection === "desc") {
       const columnButton = document.querySelector("[data-column-sort=\"" + key + "\"]");
@@ -85,18 +81,19 @@
   }
 
   filterFields.addEventListener("click", function (event) {
-    const button = event.target.closest("[data-catalog-sort-direction]");
-    if (!button || button.disabled) return;
-    applyDirection(button.getAttribute("data-catalog-sort-direction"));
+    const directionButton = event.target.closest("[data-catalog-sort-direction]");
+    if (!directionButton || directionButton.disabled) return;
+    applyDirection(directionButton.getAttribute("data-catalog-sort-direction"));
   });
 
-  /* New sort field selections always begin in ascending order. */
-  document.addEventListener("change", function (event) {
-    if (applyingDirection) return;
-    if (event.target === topSort || event.target.id === "drawerCatalogSort") resetToAscending();
+  /* A new field selection begins in ascending order. */
+  filterFields.addEventListener("change", function (event) {
+    if (applyingDirection || event.target.id !== "drawerCatalogSort") return;
+    direction = "asc";
+    window.requestAnimationFrame(updateDirectionControl);
   });
 
-  /* Keep the panel direction button in sync with direct table-header sorting. */
+  /* Direct table-header sorting remains synchronized with the panel buttons. */
   document.addEventListener("click", function (event) {
     const headerButton = event.target.closest("[data-column-sort]");
     if (!headerButton || applyingDirection) return;
@@ -110,6 +107,6 @@
     window.requestAnimationFrame(updateDirectionControl);
   });
 
-  observer.observe(filterFields, { childList: true, subtree: true });
+  observer.observe(filterFields, { childList: true });
   updateDirectionControl();
 })();
