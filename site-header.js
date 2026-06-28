@@ -1,4 +1,4 @@
-/* Shared SteamSelector Beta site header and mobile navigation. */
+/* Shared SteamSelector Beta site header, mobile navigation, and global search shell. */
 (function () {
   "use strict";
 
@@ -18,8 +18,41 @@
     const stylesheet = document.createElement("link");
     stylesheet.id = "steamselector-mobile-bottom-nav-style";
     stylesheet.rel = "stylesheet";
-    stylesheet.href = "mobile-bottom-nav.css?v=global-mobile-nav-2";
+    stylesheet.href = "mobile-bottom-nav.css?v=global-mobile-nav-3";
     document.head.appendChild(stylesheet);
+  }
+
+  function appendScript(id, source, onReady) {
+    const existing = document.getElementById(id);
+    if (existing) {
+      if (existing.dataset.loaded === "true") onReady();
+      else existing.addEventListener("load", onReady, { once: true });
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.id = id;
+    script.src = source;
+    script.async = false;
+    script.addEventListener("load", function () {
+      script.dataset.loaded = "true";
+      onReady();
+    }, { once: true });
+    document.head.appendChild(script);
+  }
+
+  function ensureGlobalSearchAssets() {
+    if (!document.getElementById("steamselector-global-search-style")) {
+      const stylesheet = document.createElement("link");
+      stylesheet.id = "steamselector-global-search-style";
+      stylesheet.rel = "stylesheet";
+      stylesheet.href = "global-search.css?v=global-search-1";
+      document.head.appendChild(stylesheet);
+    }
+
+    appendScript("steamselector-global-search-config", "global-search-config.js?v=global-search-1", function () {
+      appendScript("steamselector-global-search-script", "global-search.js?v=global-search-1", function () {});
+    });
   }
 
   function categoryMenu() {
@@ -67,6 +100,10 @@
     return "<svg " + common + "><circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c.8-4 3.4-6 8-6s7.2 2 8 6\"/></svg>";
   }
 
+  function searchIcon() {
+    return "<svg class=\"global-search-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"10.8\" cy=\"10.8\" r=\"6.3\"/><path d=\"m15.5 15.5 4.3 4.3\"/></svg>";
+  }
+
   function currentMobileSection() {
     const page = core.currentFile().toLowerCase();
 
@@ -103,6 +140,25 @@
       + "</nav>";
   }
 
+  function renderGlobalSearchOverlay() {
+    return "<div id=\"globalSearchOverlay\" class=\"global-search-overlay\" hidden aria-hidden=\"true\">"
+      + "<section class=\"global-search-panel\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"globalSearchLabel\">"
+      + "<header class=\"global-search-toolbar\">"
+      + "<button class=\"global-search-close\" type=\"button\" data-global-search-close aria-label=\"Close search\">×</button>"
+      + "<form id=\"globalSearchForm\" class=\"global-search-input-wrap\" role=\"search\">"
+      + "<label id=\"globalSearchLabel\" class=\"sr-only\" for=\"globalSearchInput\">Search all products</label>"
+      + "<input id=\"globalSearchInput\" class=\"global-search-input\" type=\"search\" placeholder=\"What can we help you find?\" autocomplete=\"off\" />"
+      + "<button id=\"globalSearchClear\" class=\"global-search-clear\" type=\"button\" data-global-search-clear aria-label=\"Clear search\" hidden>×</button>"
+      + "</form>"
+      + "<div class=\"global-search-header-actions\">"
+      + "<button class=\"global-search-icon-button\" type=\"button\" data-global-search-placeholder=\"Barcode\" aria-label=\"Barcode lookup placeholder\"><svg class=\"global-search-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 4v16M7 4v16M10 4v16M14 4v16M17 4v16M20 4v16\"/><path d=\"M2 7h20M2 17h20\"/></svg></button>"
+      + "<button class=\"global-search-icon-button\" type=\"button\" data-global-search-placeholder=\"Camera\" aria-label=\"Camera lookup placeholder\"><svg class=\"global-search-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 7h4l1.5-2h5L16 7h4v12H4z\"/><circle cx=\"12\" cy=\"13\" r=\"3.5\"/></svg></button>"
+      + "</div>"
+      + "</header>"
+      + "<div class=\"global-search-body\"><p id=\"globalSearchStatus\" class=\"global-search-status\" role=\"status\"></p><div id=\"globalSearchContent\"></div></div>"
+      + "</section></div>";
+  }
+
   function renderStandardHeader() {
     mount.innerHTML = ""
       + "<header class=\"site-header\">"
@@ -114,6 +170,7 @@
       + "<a href=\"guided-selection.html\">Guided Selection</a>"
       + "<a href=\"quote.html\">Quote <span data-quote-count class=\"quote-badge\">0</span></a>"
       + "</nav>"
+      + "<button class=\"global-header-search-trigger\" type=\"button\" data-global-search-open aria-label=\"Search products\">" + searchIcon() + "</button>"
       + "<button class=\"mobile-menu-button\" type=\"button\" data-mobile-menu aria-expanded=\"false\">Menu</button>"
       + "</div>"
       + "<div class=\"mobile-menu\" data-mobile-panel hidden>" + mobileMenuLinks() + "</div>"
@@ -141,8 +198,9 @@
 
   ensureMobileNavigationStyles();
   if (isCatalogPage) renderCatalogHeader(); else renderStandardHeader();
-  mount.insertAdjacentHTML("beforeend", renderMobileBottomNavigation());
+  mount.insertAdjacentHTML("beforeend", renderMobileBottomNavigation() + renderGlobalSearchOverlay());
   document.body.classList.add("mobile-bottom-nav-enabled");
+  ensureGlobalSearchAssets();
 
   const mobileButton = mount.querySelector("[data-mobile-menu]");
   const mobilePanel = mount.querySelector("[data-mobile-panel]");
