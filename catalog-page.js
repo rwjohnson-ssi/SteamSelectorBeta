@@ -11,8 +11,9 @@
   const categoryApi = window.SteamSelectorCategories;
   const productApi = window.SteamSelectorProducts;
   const configApi = window.SteamSelectorCatalogConfig;
+  const quantityApi = window.SteamSelectorQuantity;
 
-  if (!core || !categoryApi || !productApi || !configApi) return;
+  if (!core || !categoryApi || !productApi || !configApi || !quantityApi) return;
 
   const query = core.parameters();
   const requestedCategoryId = query.get("id") || "steam-traps";
@@ -218,6 +219,20 @@
       .join("");
   }
 
+  function quickViewQuantityInput() {
+    return dom.modal.querySelector("#quickViewQty");
+  }
+
+  function updateQuickViewAddLabel() {
+    const quantityInput = quickViewQuantityInput();
+    const addButton = dom.modal.querySelector("[data-add-quote]");
+    if (!quantityInput || !addButton) return;
+
+    const quantity = quantityApi.normalize(quantityInput.value);
+    quantityInput.value = String(quantity);
+    addButton.textContent = "Add " + quantity + " to Quote";
+  }
+
   function openQuickView(productId, trigger) {
     const product = productApi.getProductById(productId);
     if (!product) return;
@@ -231,16 +246,21 @@
       + "<p class=\"quick-view-summary\">" + core.escapeHtml(product.summary) + "</p>"
       + "<p class=\"quick-view-description\">" + core.escapeHtml(product.description) + "</p>"
       + "<div class=\"quick-view-specs\">" + filterSummary(product) + "</div>"
+      + "<div class=\"quick-view-order-row\">"
+      + quantityApi.markup("quickViewQty", "Quantity")
+      + "<p class=\"quick-view-quote-status\" data-quick-quote-status role=\"status\" aria-live=\"polite\"></p>"
+      + "</div>"
       + "<div class=\"quick-view-actions\">"
-      + "<button class=\"btn btn-secondary\" type=\"button\" data-quick-close>Close</button>"
-      + "<button class=\"btn btn-secondary\" type=\"button\" data-add-quote=\"" + core.escapeHtml(product.id) + "\">Add to Quote</button>"
-      + "<a class=\"btn btn-primary\" href=\"" + core.productUrl(product) + "\">View Full Product Page →</a>"
+      + "<button class=\"btn btn-primary\" type=\"button\" data-add-quote=\"" + core.escapeHtml(product.id) + "\">Add 1 to Quote</button>"
+      + "<a class=\"btn btn-secondary\" href=\"" + core.productUrl(product) + "\">View Full Product Page</a>"
       + "</div>"
       + "</div>"
       + "</div>";
 
     dom.modal.hidden = false;
     document.body.classList.add("quick-view-open");
+    updateQuickViewAddLabel();
+
     const closeButton = dom.modal.querySelector(".quick-view-close");
     if (closeButton) closeButton.focus();
   }
@@ -286,6 +306,8 @@
   renderResults();
   setView(config.defaultView);
 
+  quantityApi.bind(document);
+
   dom.search.addEventListener("input", function () {
     state.search = dom.search.value.trim();
     state.page = 1;
@@ -319,6 +341,10 @@
     });
   });
 
+  document.addEventListener("steamselector:quantity-change", function (event) {
+    if (event.target && event.target.id === "quickViewQty") updateQuickViewAddLabel();
+  });
+
   document.addEventListener("click", function (event) {
     const quickButton = event.target.closest("[data-quick-view]");
     if (quickButton) {
@@ -335,8 +361,18 @@
     if (addButton) {
       const product = productApi.getProductById(addButton.getAttribute("data-add-quote"));
       if (!product) return;
-      core.quote.add(product, 1);
-      dom.status.textContent = product.id + " was added to the quote list.";
+
+      const quantityInput = quickViewQuantityInput();
+      const quantity = quantityApi.normalize(quantityInput ? quantityInput.value : 1);
+      core.quote.add(product, quantity);
+
+      const confirmation = dom.modal.querySelector("[data-quick-quote-status]");
+      const message = quantity === 1
+        ? product.id + " was added to the quote list."
+        : quantity + " × " + product.id + " were added to the quote list.";
+
+      if (confirmation) confirmation.textContent = message;
+      dom.status.textContent = message;
     }
   });
 
