@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="SteamSelector Beta saved project lists." />
+  <title>Project Lists | SteamSelector Beta</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="catalog-layout.css" />
+  <link rel="stylesheet" href="quantity-stepper.css?v=qty-stepper-1" />
+  <link rel="stylesheet" href="projects.css?v=projects-1" />
+</head>
+<body class="projects-page">
+  <div id="siteHeaderMount"></div>
+
+  <main class="page projects-shell">
+    <nav id="breadcrumbs" class="catalog-breadcrumbs" aria-label="Breadcrumb"></nav>
+
+    <header class="catalog-heading">
+      <p class="eyebrow">Project List</p>
+      <h1>Saved Projects</h1>
+      <p>Create named equipment lists for separate jobs, then save products, quantities, and item notes within each project.</p>
+    </header>
+
+    <form id="projectCreateForm" class="project-create-card">
+      <div class="project-field">
+        <label for="projectCreateName">Project name</label>
+        <input id="projectCreateName" type="text" maxlength="120" placeholder="Hospital Wing B" required />
+      </div>
+      <div class="project-field">
+        <label for="projectCreateDescription">Description <span class="muted">(optional)</span></label>
+        <input id="projectCreateDescription" type="text" maxlength="600" placeholder="Steam and condensate equipment selection" />
+      </div>
+      <button class="btn btn-primary" type="submit">Create Project</button>
+    </form>
+
+    <div class="project-layout">
+      <aside class="project-list-panel" aria-label="Saved projects">
+        <h2>Your Projects</h2>
+        <p class="project-list-note">Choose a project to manage its products, quantities, and notes.</p>
+        <div id="projectList" class="project-list"></div>
+      </aside>
+
+      <section id="projectWorkspace" class="project-workspace" hidden>
+        <form id="projectEditor" class="project-editor">
+          <div class="project-editor-fields">
+            <div class="project-field">
+              <label for="projectEditName">Project name</label>
+              <input id="projectEditName" type="text" maxlength="120" required />
+            </div>
+            <div class="project-field">
+              <label for="projectEditDescription">Description <span class="muted">(optional)</span></label>
+              <input id="projectEditDescription" type="text" maxlength="600" />
+            </div>
+          </div>
+          <div class="project-editor-actions">
+            <button class="btn btn-secondary" type="submit">Save Details</button>
+            <button id="deleteProjectButton" class="btn btn-secondary" type="button">Delete Project</button>
+          </div>
+        </form>
+
+        <div class="project-summary-row">
+          <p id="projectSummary"></p>
+          <a class="text-link" href="index.html#browse-categories">Browse products</a>
+        </div>
+
+        <div id="projectEmptyState" class="catalog-empty-state" hidden>This project is empty. Browse products, then use Add to Project from any product page.</div>
+
+        <div class="project-table-wrap">
+          <table class="project-table">
+            <thead>
+              <tr><th>Image</th><th>Product</th><th>Qty</th><th>Notes</th><th></th></tr>
+            </thead>
+            <tbody id="projectTableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="projectActions" class="project-actions" hidden>
+          <button id="copyProjectButton" class="btn btn-primary" type="button">Copy Project List</button>
+          <button id="clearProjectItemsButton" class="btn btn-secondary" type="button">Clear Project Items</button>
+        </div>
+        <p id="projectMessage" class="catalog-status" role="status"></p>
+      </section>
+
+      <section id="noProjectWorkspace" class="project-workspace">
+        <div class="catalog-empty-state">Create a project above, then add products to it from a product page.</div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer"><div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div></footer>
+
+  <script src="categories.js"></script>
+  <script src="products.js"></script>
+  <script src="catalog-core.js"></script>
+  <script src="quantity-stepper.js?v=qty-stepper-1"></script>
+  <script src="site-header.js?v=projects-1"></script>
+  <script src="projects-page.js?v=projects-1"></script>
+</body>
+</html>
