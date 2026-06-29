@@ -68,11 +68,12 @@
     if (!product) return "";
     const category = core.getCategory(product.category);
     const quantityId = "projectQty-" + project.id + "-" + product.id.replace(/[^a-zA-Z0-9_-]/g, "-");
+    const stepper = quantityApi.markup(quantityId, "Quantity").replace("value=\"1\"", "value=\"" + core.quote.safeQuantity(item.qty) + "\"");
 
     return "<tr data-project-item=\"" + escape(product.id) + "\">"
       + "<td>" + core.renderProductVisual(product, category, "product-thumb") + "</td>"
       + "<td><a class=\"catalog-model-link\" href=\"" + core.productUrl(product) + "\">" + escape(product.id) + "</a><br /><small>" + escape(product.summary) + "</small></td>"
-      + "<td>" + quantityApi.markup(quantityId, "Quantity") + "</td>"
+      + "<td>" + stepper + "</td>"
       + "<td><input class=\"project-notes-input\" type=\"text\" data-project-notes placeholder=\"Optional notes\" value=\"" + escape(item.notes || "") + "\" /></td>"
       + "<td><button class=\"project-remove-button\" type=\"button\" data-remove-project-item>Remove</button></td>"
       + "</tr>";
