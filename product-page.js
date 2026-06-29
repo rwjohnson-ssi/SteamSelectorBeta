@@ -49,6 +49,28 @@
     addButton.textContent = "Add " + quantity + " to Quote";
   }
 
+  function projectOptions(selectedId) {
+    const projects = core.projects.load();
+    if (!projects.length) return "<option value=\"\">No saved projects yet</option>";
+
+    return "<option value=\"\">Select a saved project</option>" + projects.map(function (project) {
+      const selected = project.id === selectedId ? " selected" : "";
+      return "<option value=\"" + core.escapeHtml(project.id) + "\"" + selected + ">" + core.escapeHtml(project.name) + "</option>";
+    }).join("");
+  }
+
+  function refreshProjectPicker() {
+    const select = document.getElementById("productProjectSelect");
+    if (!select) return;
+    const selectedId = select.value;
+    select.innerHTML = projectOptions(selectedId);
+  }
+
+  function projectStatus(text) {
+    const projectMessage = document.getElementById("productProjectStatus");
+    if (projectMessage) projectMessage.textContent = text;
+  }
+
   document.title = product.id + " | SteamSelector Beta";
   core.renderBreadcrumbs([
     { label: "Home", href: "index.html" },
@@ -67,8 +89,19 @@
     + "<div class=\"product-action-row\">"
     + quantityApi.markup("productQty", "Quantity")
     + "<button id=\"addProductToQuote\" class=\"btn btn-primary\" type=\"button\">Add 1 to Quote</button>"
+    + "<button id=\"toggleProductProject\" class=\"btn btn-secondary\" type=\"button\" aria-expanded=\"false\" aria-controls=\"productProjectPanel\">Add to Project</button>"
     + "<a class=\"btn btn-secondary\" href=\"quote.html\">View Quote</a>"
     + "</div>"
+    + "<section id=\"productProjectPanel\" class=\"product-project-panel\" hidden>"
+    + "<div class=\"product-project-panel-heading\"><div><h3>Add " + core.escapeHtml(product.id) + " to a Project</h3><p>Use the same quantity selected above.</p></div><a class=\"text-link\" href=\"projects.html\">Manage Projects</a></div>"
+    + "<div class=\"project-field\"><label for=\"productProjectSelect\">Saved project</label><select id=\"productProjectSelect\">" + projectOptions("") + "</select></div>"
+    + "<div class=\"product-project-panel-actions\"><button id=\"addToSelectedProject\" class=\"btn btn-primary\" type=\"button\">Add to Selected Project</button></div>"
+    + "<div class=\"product-project-divider\"><span>or create a new project</span></div>"
+    + "<div class=\"project-field\"><label for=\"productNewProjectName\">New project name</label><input id=\"productNewProjectName\" type=\"text\" maxlength=\"120\" placeholder=\"Boiler Room Upgrade\" /></div>"
+    + "<div class=\"project-field\"><label for=\"productNewProjectDescription\">Description <span class=\"muted\">(optional)</span></label><input id=\"productNewProjectDescription\" type=\"text\" maxlength=\"600\" placeholder=\"Steam equipment selection\" /></div>"
+    + "<div class=\"product-project-panel-actions\"><button id=\"createProjectAndAdd\" class=\"btn btn-secondary\" type=\"button\">Create Project and Add Product</button></div>"
+    + "<p id=\"productProjectStatus\" class=\"product-project-status\" role=\"status\" aria-live=\"polite\"></p>"
+    + "</section>"
     + "</section>"
     + "</div>"
     + "<div class=\"product-sections\">"
@@ -97,5 +130,58 @@
     status.textContent = quantity === 1
       ? product.id + " was added to the quote list."
       : quantity + " × " + product.id + " were added to the quote list.";
+  });
+
+  document.getElementById("toggleProductProject").addEventListener("click", function () {
+    const panel = document.getElementById("productProjectPanel");
+    const isOpening = panel.hidden;
+    panel.hidden = !isOpening;
+    this.setAttribute("aria-expanded", String(isOpening));
+    if (isOpening) refreshProjectPicker();
+  });
+
+  document.getElementById("addToSelectedProject").addEventListener("click", function () {
+    const projectId = document.getElementById("productProjectSelect").value;
+    if (!projectId) {
+      projectStatus("Choose a saved project or create a new project below.");
+      return;
+    }
+
+    const quantity = quantityApi.normalize(document.getElementById("productQty").value);
+    const project = core.projects.addItem(projectId, product, quantity);
+    if (!project) {
+      projectStatus("That project is no longer available. Refresh the project list and try again.");
+      refreshProjectPicker();
+      return;
+    }
+
+    projectStatus(quantity === 1
+      ? product.id + " was added to \"" + project.name + "\"."
+      : quantity + " × " + product.id + " were added to \"" + project.name + "\".");
+  });
+
+  document.getElementById("createProjectAndAdd").addEventListener("click", function () {
+    const nameInput = document.getElementById("productNewProjectName");
+    const descriptionInput = document.getElementById("productNewProjectDescription");
+    const project = core.projects.create({ name: nameInput.value, description: descriptionInput.value });
+
+    if (!project) {
+      projectStatus("Enter a new project name before creating it.");
+      nameInput.focus();
+      return;
+    }
+
+    const quantity = quantityApi.normalize(document.getElementById("productQty").value);
+    core.projects.addItem(project.id, product, quantity);
+    nameInput.value = "";
+    descriptionInput.value = "";
+    refreshProjectPicker();
+    document.getElementById("productProjectSelect").value = project.id;
+    projectStatus("Created \"" + project.name + "\" and added " + product.id + ".");
+  });
+
+  window.addEventListener("steamselector:projects-updated", function () {
+    const panel = document.getElementById("productProjectPanel");
+    if (panel && !panel.hidden) refreshProjectPicker();
   });
 })();
