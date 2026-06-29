@@ -80,6 +80,10 @@ The site is ready for a basic static Netlify deployment because `index.html` is 
 4. Leave the publish directory empty, or use `.` if Netlify requires a value.
 5. Select **Deploy site**.
 
+## GitHub Pages
+
+The public beta publishes from the `main` branch and repository root. A new commit to `main` triggers a fresh GitHub Pages deployment.
+
 ## Project phase
 
 - **Phase A — Deploy static site:** In Progress
