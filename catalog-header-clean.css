@@ -9,3 +9,24 @@
   display: none;
   content: none;
 }
+
+/*
+  Mobile header consistency:
+  Quote List uses a visible hamburger + Menu label. Catalog/product-results pages
+  use the same clear menu affordance instead of an icon-only control.
+*/
+@media (max-width: 760px) {
+  .catalog-page .catalog-header-menu {
+    gap: 8px;
+    min-height: 43px;
+    padding: 0 12px;
+  }
+
+  .catalog-page .catalog-header-menu span:not(.catalog-action-icon) {
+    display: inline;
+  }
+
+  .catalog-page .catalog-header-menu .catalog-action-icon {
+    font-size: 19px;
+  }
+}
