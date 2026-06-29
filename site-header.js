@@ -73,6 +73,7 @@
   function mobileMenuLinks() {
     return "<a href=\"index.html\">Home</a>"
       + "<a href=\"guided-selection.html\">Guided Selection</a>"
+      + "<a href=\"projects.html\">Projects</a>"
       + "<a href=\"quote.html\">Quote <span data-quote-count class=\"quote-badge\">0</span></a>"
       + "<span class=\"mobile-menu-title\">Product Categories</span>"
       + categories.map(function (category) {
@@ -99,6 +100,10 @@
       return "<svg " + common + "><path d=\"M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 0 4 22zM20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5A2.5 2.5 0 0 1 20 22z\"/></svg>";
     }
 
+    if (name === "projects") {
+      return "<svg " + common + "><path d=\"M3 6.5h7l2 2h9v10.5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/><path d=\"M3 6.5v-2A1.5 1.5 0 0 1 4.5 3H10l2 2h5.5A1.5 1.5 0 0 1 19 6.5\"/><path d=\"M8 13h8M8 17h5\"/></svg>";
+    }
+
     return "<svg " + common + "><circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c.8-4 3.4-6 8-6s7.2 2 8 6\"/></svg>";
   }
 
@@ -111,6 +116,7 @@
 
     if (page === "index.html") return "home";
     if (page === "quote.html") return "quote";
+    if (page === "projects.html") return "projects";
     if (page === "guided-selection.html") return "resources";
     if (page === "category.html" || page === "product.html" || page === "search.html") return "products";
     return "";
@@ -135,10 +141,7 @@
       + navLink("products", "index.html#browse-categories", "Products", "products", false)
       + navLink("quote", "quote.html", "Quote List", "quote", true)
       + navLink("resources", "guided-selection.html", "Resources", "resources", false)
-      + "<button type=\"button\" aria-disabled=\"true\" aria-label=\"Account features are not available in this beta\">"
-      + icon("account")
-      + "<span>Account</span>"
-      + "</button>"
+      + navLink("projects", "projects.html", "Projects", "projects", false)
       + "</nav>";
   }
 
@@ -170,6 +173,7 @@
       + "<a href=\"index.html\">Home</a>"
       + "<div class=\"nav-categories\"><button type=\"button\">Product Categories <span>⌄</span></button><div class=\"nav-dropdown\">" + categoryMenu() + "</div></div>"
       + "<a href=\"guided-selection.html\">Guided Selection</a>"
+      + "<a href=\"projects.html\">Projects</a>"
       + "<a href=\"quote.html\">Quote <span data-quote-count class=\"quote-badge\">0</span></a>"
       + "</nav>"
       + "<button class=\"global-header-search-trigger\" type=\"button\" data-global-search-open aria-label=\"Search products\">" + searchIcon() + "</button>"
