@@ -1,12 +1,13 @@
 /*
   SteamSelector Beta shared core.
   Keep cross-page helpers, URL builders, product matching, product visual fallback,
-  breadcrumbs, and browser-only quote storage in this one place.
+  breadcrumbs, browser-only quote storage, and browser-only project storage here.
 */
 (function () {
   "use strict";
 
   const QUOTE_KEY = "steamselector_beta_quote";
+  const PROJECTS_KEY = "steamselector_beta_projects";
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (character) {
@@ -189,6 +190,188 @@
     }, 0);
   }
 
+  /*
+    Project List storage helpers.
+    Project item records intentionally match Quote List records: { id, qty, notes }.
+    Keep all project localStorage access in this section so a future database/API
+    migration only needs to replace these helpers.
+  */
+  function createProjectId() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") return window.crypto.randomUUID();
+    return "project-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 9);
+  }
+
+  function projectText(value, maxLength) {
+    return String(value == null ? "" : value).trim().slice(0, maxLength);
+  }
+
+  function normalizeProjectItem(item) {
+    if (!item || !projectText(item.id, 160)) return null;
+    return {
+      id: projectText(item.id, 160),
+      qty: safeQuantity(item.qty),
+      notes: projectText(item.notes, 600)
+    };
+  }
+
+  function normalizeProject(project) {
+    if (!project || !projectText(project.id, 160) || !projectText(project.name, 120)) return null;
+    const seenProductIds = new Set();
+    const items = Array.isArray(project.items) ? project.items : [];
+
+    return {
+      id: projectText(project.id, 160),
+      name: projectText(project.name, 120),
+      description: projectText(project.description, 600),
+      createdAt: projectText(project.createdAt, 80) || new Date().toISOString(),
+      items: items.map(normalizeProjectItem).filter(function (item) {
+        if (!item || seenProductIds.has(item.id)) return false;
+        seenProductIds.add(item.id);
+        return true;
+      })
+    };
+  }
+
+  function cloneProject(project) {
+    return normalizeProject(JSON.parse(JSON.stringify(project)));
+  }
+
+  function loadProjects() {
+    try {
+      const projects = JSON.parse(localStorage.getItem(PROJECTS_KEY) || "[]");
+      return Array.isArray(projects) ? projects.map(normalizeProject).filter(Boolean) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function notifyProjectsUpdated() {
+    window.dispatchEvent(new CustomEvent("steamselector:projects-updated"));
+  }
+
+  function saveProjects(projects) {
+    const safeProjects = Array.isArray(projects) ? projects.map(normalizeProject).filter(Boolean) : [];
+    localStorage.setItem(PROJECTS_KEY, JSON.stringify(safeProjects));
+    notifyProjectsUpdated();
+    return safeProjects.map(cloneProject);
+  }
+
+  function getProject(projectId) {
+    const id = projectText(projectId, 160);
+    const project = loadProjects().find(function (entry) { return entry.id === id; });
+    return project ? cloneProject(project) : null;
+  }
+
+  function createProject(input) {
+    const name = projectText(input && input.name, 120);
+    if (!name) return null;
+
+    const project = {
+      id: createProjectId(),
+      name: name,
+      description: projectText(input && input.description, 600),
+      createdAt: new Date().toISOString(),
+      items: []
+    };
+
+    const projects = loadProjects();
+    projects.unshift(project);
+    saveProjects(projects);
+    return cloneProject(project);
+  }
+
+  function updateProject(projectId, changes) {
+    const projects = loadProjects();
+    const project = projects.find(function (entry) { return entry.id === projectText(projectId, 160); });
+    if (!project) return null;
+
+    if (Object.prototype.hasOwnProperty.call(changes || {}, "name")) {
+      const name = projectText(changes.name, 120);
+      if (!name) return null;
+      project.name = name;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(changes || {}, "description")) {
+      project.description = projectText(changes.description, 600);
+    }
+
+    saveProjects(projects);
+    return cloneProject(project);
+  }
+
+  function removeProject(projectId) {
+    const id = projectText(projectId, 160);
+    const projects = loadProjects();
+    const nextProjects = projects.filter(function (project) { return project.id !== id; });
+    if (nextProjects.length === projects.length) return false;
+    saveProjects(nextProjects);
+    return true;
+  }
+
+  function addToProject(projectId, product, quantity) {
+    if (!product || !projectText(product.id, 160)) return null;
+
+    const projects = loadProjects();
+    const project = projects.find(function (entry) { return entry.id === projectText(projectId, 160); });
+    if (!project) return null;
+
+    const existing = project.items.find(function (item) { return item.id === product.id; });
+    const qty = safeQuantity(quantity);
+
+    if (existing) {
+      existing.qty = safeQuantity(existing.qty + qty);
+    } else {
+      project.items.push({ id: product.id, qty: qty, notes: "" });
+    }
+
+    saveProjects(projects);
+    return cloneProject(project);
+  }
+
+  function updateProjectItem(projectId, productId, changes) {
+    const projects = loadProjects();
+    const project = projects.find(function (entry) { return entry.id === projectText(projectId, 160); });
+    if (!project) return null;
+
+    const item = project.items.find(function (entry) { return entry.id === projectText(productId, 160); });
+    if (!item) return null;
+
+    if (Object.prototype.hasOwnProperty.call(changes || {}, "qty")) item.qty = safeQuantity(changes.qty);
+    if (Object.prototype.hasOwnProperty.call(changes || {}, "notes")) item.notes = projectText(changes.notes, 600);
+
+    saveProjects(projects);
+    return cloneProject(project);
+  }
+
+  function removeProjectItem(projectId, productId) {
+    const projects = loadProjects();
+    const project = projects.find(function (entry) { return entry.id === projectText(projectId, 160); });
+    if (!project) return null;
+
+    const nextItems = project.items.filter(function (item) { return item.id !== projectText(productId, 160); });
+    if (nextItems.length === project.items.length) return cloneProject(project);
+
+    project.items = nextItems;
+    saveProjects(projects);
+    return cloneProject(project);
+  }
+
+  function clearProjectItems(projectId) {
+    const projects = loadProjects();
+    const project = projects.find(function (entry) { return entry.id === projectText(projectId, 160); });
+    if (!project) return null;
+
+    project.items = [];
+    saveProjects(projects);
+    return cloneProject(project);
+  }
+
+  function projectItemCount(project) {
+    const currentProject = typeof project === "string" ? getProject(project) : normalizeProject(project);
+    if (!currentProject) return 0;
+    return currentProject.items.reduce(function (total, item) { return total + safeQuantity(item.qty); }, 0);
+  }
+
   window.SteamSelectorCore = {
     currentFile: currentFile,
     parameters: parameters,
@@ -210,6 +393,20 @@
       clear: clearQuote,
       count: quoteCount,
       safeQuantity: safeQuantity
+    },
+    projects: {
+      key: PROJECTS_KEY,
+      load: loadProjects,
+      save: saveProjects,
+      get: getProject,
+      create: createProject,
+      update: updateProject,
+      remove: removeProject,
+      addItem: addToProject,
+      updateItem: updateProjectItem,
+      removeItem: removeProjectItem,
+      clearItems: clearProjectItems,
+      itemCount: projectItemCount
     }
   };
 })();
