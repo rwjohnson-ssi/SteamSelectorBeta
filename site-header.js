@@ -74,7 +74,7 @@
     return "<a href=\"index.html\">Home</a>"
       + "<a href=\"guided-selection.html\">Guided Selection</a>"
       + "<a href=\"projects.html\">Projects</a>"
-      + "<a href=\"quote.html\">Quote <span data-quote-count class=\"quote-badge\">0</span></a>"
+      + "<a href=\"quote.html\">Quote <b data-quote-count class=\"mobile-menu-quote-badge\">0</b></a>"
       + "<span class=\"mobile-menu-title\">Product Categories</span>"
       + categories.map(function (category) {
           return "<a href=\"" + core.categoryUrl(category.id) + "\">" + core.escapeHtml(category.title) + "</a>";
@@ -157,7 +157,7 @@
       + "</form>"
       + "<div class=\"global-search-header-actions\">"
       + "<button class=\"global-search-icon-button\" type=\"button\" data-global-search-placeholder=\"Barcode\" aria-label=\"Barcode lookup placeholder\"><svg class=\"global-search-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 4v16M7 4v16M10 4v16M14 4v16M17 4v16M20 4v16\"/><path d=\"M2 7h20M2 17h20\"/></svg></button>"
-      + "<button class=\"global-search-icon-button\" type=\"button\" data-global-search-placeholder=\"Camera\" aria-label=\"Camera lookup placeholder\"><svg class=\"global-search-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 7h4l1.5-2h5L16 7h4v12H4z\"/><circle cx=\"12\" cy=\"13\" r=\"3.5\"/></svg></button>"
+      + "<button class=\"global-search-icon-button\" type=\"button\" data-global-search-placeholder=\"Camera\" aria-label=\"Camera lookup placeholder\"><svg class=\"global-search-svg\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 7h4l1.5-2h5L16 7h4.5A1.5 1.5 0 0 1 19 6.5\"/></svg></button>"
       + "</div>"
       + "</header>"
       + "<div class=\"global-search-body\"><p id=\"globalSearchStatus\" class=\"global-search-status\" role=\"status\"></p><div id=\"globalSearchContent\"></div></div>"
@@ -190,7 +190,7 @@
       + "<a class=\"catalog-brand\" href=\"index.html\"><span class=\"catalog-brand-mark\">SS</span><span>SteamSelector <small>BETA</small></span></a>"
       + "<div class=\"catalog-header-actions\">"
       + "<a class=\"catalog-header-quote\" href=\"quote.html\"><span class=\"catalog-action-icon\">▧</span><span>Quote</span><b data-quote-count>0</b></a>"
-      + "<button class=\"catalog-header-menu\" type=\"button\" data-mobile-menu aria-expanded=\"false\"><span class=\"catalog-action-icon\">☰</span><span>Menu</span></button>"
+      + "<button class=\"catalog-mobile-menu-button\" type=\"button\" data-mobile-menu aria-expanded=\"false\">Menu</button>"
       + "</div>"
       + "</div>"
       + "<form id=\"catalogHeaderSearchForm\" class=\"catalog-header-search page\" role=\"search\">"
