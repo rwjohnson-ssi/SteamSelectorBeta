@@ -1,7 +1,7 @@
 /*
-  Quick View redesign controller.
-  Replaces the legacy modal content on category pages while preserving the
-  existing shared quote storage and quantity-stepper behavior.
+   Quick View redesign controller.
+   Replaces the legacy modal content on category pages while preserving the
+   existing shared quote storage and quantity-stepper behavior.
 */
 (function () {
   "use strict";
@@ -121,7 +121,8 @@
 
     modal.hidden = false;
     document.body.classList.add("quick-view-open");
-    quantityApi.bind(modal);
+    /* The category page already binds the shared stepper once on document. Binding
+       it again on every modal open caused one press to run more than one increment. */
     updateAddLabel();
 
     const closeButton = modal.querySelector(".quick-view-close");
