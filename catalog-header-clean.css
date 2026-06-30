@@ -11,18 +11,63 @@
 }
 
 /*
-  Mobile header consistency:
-  The catalog header previously showed an icon-only square while Quote List
-  shows a labeled Menu button. Keep the catalog Quote badge, but present the
-  same clear Menu action on every mobile page.
+  Mobile catalog header consistency.
+  Catalog pages retain their visual/search treatment, but use the same compact
+  labeled Menu control as Quote List without forcing the SteamSelector brand
+  or BETA label onto a second line.
 */
 @media (max-width: 760px) {
+  .catalog-page .catalog-site-header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 8px;
+    min-height: 78px;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .catalog-page .catalog-brand {
+    min-width: 0;
+    gap: 8px;
+    font-size: 24px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .catalog-page .catalog-brand > span:last-child,
+  .catalog-page .catalog-brand small {
+    white-space: nowrap;
+  }
+
+  .catalog-page .catalog-brand small {
+    margin-left: 4px;
+    font-size: .4em;
+  }
+
+  .catalog-page .catalog-brand-mark {
+    flex: 0 0 46px;
+  }
+
+  .catalog-page .catalog-header-actions {
+    flex: 0 0 auto;
+    gap: 7px;
+  }
+
+  .catalog-page .catalog-header-quote {
+    display: inline-flex;
+    justify-content: center;
+    width: 56px;
+    min-width: 56px;
+    padding: 0;
+  }
+
   .catalog-page .catalog-header-menu {
     display: inline-flex;
-    min-width: 108px;
-    min-height: 43px;
-    padding: 0 14px;
     justify-content: center;
+    width: 78px;
+    min-width: 78px;
+    min-height: 43px;
+    padding: 0;
     color: #fff;
     background: #181a1d;
     border-color: #35383e;
@@ -37,5 +82,28 @@
 
   .catalog-page .catalog-header-menu span:not(.catalog-action-icon) {
     display: inline !important;
+  }
+
+  /* Keep the Quote badge inside the opened catalog menu compact and inline. */
+  .catalog-page .catalog-header-mobile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .catalog-page .catalog-header-mobile-menu .quote-badge {
+    display: inline-grid !important;
+    width: auto !important;
+    min-width: 26px;
+    height: 26px;
+    margin: 0;
+    padding: 0 7px !important;
+    place-items: center;
+    color: #fff;
+    background: var(--beta-red, #d82128);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
   }
 }
