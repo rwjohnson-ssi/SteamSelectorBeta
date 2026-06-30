@@ -1,9 +1,16 @@
 /*
-  SteamSelector Beta category configuration.
-  Keep category-specific labels and navigation here so all pages use the same structure.
+   SteamSelector Beta category configuration.
+   Keep category-specific labels and navigation here so all pages use the same structure.
 */
 (function () {
   "use strict";
+
+  /*
+    Changing this token refreshes category.html for every category when a user
+    follows a category link. It prevents a cached category page from leaving
+    one equipment family on an older catalog layout or Quick View script.
+  */
+  const CATALOG_RELEASE = "catalog-compact-qty-2";
 
   const CATEGORY_DEFINITIONS = [
     {
@@ -98,7 +105,7 @@
 
     if (!category) return "index.html#browse-categories";
 
-    const parameters = new URLSearchParams({ id: category.id });
+    const parameters = new URLSearchParams({ id: category.id, v: CATALOG_RELEASE });
     const validChild = category.children.some(function (child) { return child.id === childId; });
     if (childId && childId !== "all" && validChild) parameters.set("type", childId);
     return "category.html?" + parameters.toString();
