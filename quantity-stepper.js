@@ -1,9 +1,11 @@
 /*
-  Shared quantity stepper for Quick View and full product pages.
-  Use this module anywhere an item can be added to the quote list.
+   Shared quantity stepper for Quick View and full product pages.
+   Use this module anywhere an item can be added to the quote list.
 */
 (function () {
   "use strict";
+
+  const DOCUMENT_BIND_FLAG = "__steamselectorQuantityStepperBound";
 
   function normalize(value) {
     const quantity = Math.floor(Number(value));
@@ -18,7 +20,7 @@
       + "<span class=\"quantity-control-label\">" + safeLabel + "</span>"
       + "<div class=\"quantity-stepper\">"
       + "<button class=\"quantity-stepper-button\" type=\"button\" data-quantity-step=\"-1\" aria-label=\"Decrease quantity\">−</button>"
-      + "<input id=\"" + safeId + "\" class=\"quantity-stepper-input\" data-quantity-input type=\"number\" min=\"1\" value=\"1\" inputmode=\"numeric\" aria-label=\"" + safeLabel + "\" />"
+      + "<input id=\"" + safeId + "\" class=\"quantity-stepper-input\" data-quantity-input type=\"number\" min=\"1\" step=\"1\" value=\"1\" inputmode=\"numeric\" aria-label=\"" + safeLabel + "\" />"
       + "<button class=\"quantity-stepper-button\" type=\"button\" data-quantity-step=\"1\" aria-label=\"Increase quantity\">+</button>"
       + "</div>"
       + "</div>";
@@ -32,23 +34,36 @@
     return nextValue;
   }
 
-  function bind(root) {
-    const eventRoot = root || document;
+  function closestElement(target, selector) {
+    return target && typeof target.closest === "function" ? target.closest(selector) : null;
+  }
 
-    eventRoot.addEventListener("click", function (event) {
-      const button = event.target.closest("[data-quantity-step]");
+  function bind() {
+    /*
+      Every page uses one document-level delegated listener. This makes the
+      binding safe when Quick View content is opened repeatedly or when another
+      component asks to bind the shared stepper again.
+    */
+    if (document[DOCUMENT_BIND_FLAG]) return;
+    document[DOCUMENT_BIND_FLAG] = true;
+
+    document.addEventListener("click", function (event) {
+      const button = closestElement(event.target, "[data-quantity-step]");
       if (!button) return;
 
       const container = button.closest("[data-quantity-stepper]");
       const input = container ? container.querySelector("[data-quantity-input]") : null;
       if (!input) return;
 
+      const requestedStep = Number(button.getAttribute("data-quantity-step"));
+      const step = requestedStep < 0 ? -1 : 1;
+
       event.preventDefault();
-      setValue(input, normalize(input.value) + Number(button.getAttribute("data-quantity-step")));
+      setValue(input, normalize(input.value) + step);
     });
 
-    eventRoot.addEventListener("change", function (event) {
-      const input = event.target.closest("[data-quantity-input]");
+    document.addEventListener("change", function (event) {
+      const input = closestElement(event.target, "[data-quantity-input]");
       if (!input) return;
       setValue(input, input.value);
     });
