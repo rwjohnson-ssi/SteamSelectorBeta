@@ -1,6 +1,7 @@
 /*
   Mobile behavior for the shared catalog results table.
   Keeps every row as a real horizontal table row; no columns are pinned or stacked.
+  The compact rules make it practical to scan more products above the fixed bottom navigation.
 */
 
 @media (max-width: 740px) {
@@ -19,7 +20,7 @@
   .catalog-page .results-table.catalog-table {
     display: table !important;
     width: max-content !important;
-    min-width: 810px !important;
+    min-width: 740px !important;
     table-layout: auto !important;
     border-collapse: collapse !important;
     border-spacing: 0 !important;
@@ -51,7 +52,7 @@
     width: auto !important;
     min-width: 0 !important;
     max-width: none !important;
-    padding: 8px 12px !important;
+    padding: 6px 10px !important;
     border-right: 1px solid #e8ebee !important;
     border-bottom: 1px solid #e3e7eb !important;
     box-shadow: none !important;
@@ -62,17 +63,75 @@
   }
 
   .catalog-page .results-table th {
-    height: 47px !important;
+    height: 44px !important;
     color: #fff !important;
     background: #11161b !important;
-    font-size: 10px !important;
+    font-size: 9px !important;
+    letter-spacing: .035em;
   }
 
   .catalog-page .results-table td {
-    height: 74px !important;
+    height: 58px !important;
     color: #151a20 !important;
     background: #fff !important;
     font-size: 12px !important;
+  }
+
+  .catalog-page .results-table .results-quick-column {
+    width: 80px !important;
+  }
+
+  .catalog-page .results-table .results-image-column {
+    width: 84px !important;
+  }
+
+  .catalog-page .results-table .results-model-column {
+    width: 150px !important;
+  }
+
+  .catalog-page .results-quick-view {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 6px !important;
+  }
+
+  .catalog-page .results-eye-icon {
+    width: 18px !important;
+    height: 12px !important;
+    border-width: 1.5px !important;
+  }
+
+  .catalog-page .results-eye-icon::after {
+    width: 5px !important;
+    height: 5px !important;
+  }
+
+  .catalog-page .results-product-image {
+    width: 52px !important;
+    height: 48px !important;
+  }
+
+  .catalog-page .results-product-image.product-visual-fallback {
+    transform: scale(.78);
+    transform-origin: center;
+  }
+
+  .catalog-page .results-product-image img {
+    display: block;
+    max-width: 52px;
+    max-height: 48px;
+    margin: 0 auto;
+    object-fit: contain;
+  }
+
+  .catalog-page .results-model-link {
+    font-size: 13px !important;
+  }
+
+  .catalog-page .results-detail-link {
+    width: 26px !important;
+    height: 36px !important;
+    font-size: 26px !important;
   }
 
   .catalog-page .results-table tbody tr:hover td {
