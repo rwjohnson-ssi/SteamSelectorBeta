@@ -55,9 +55,15 @@
 }
 
 .quantity-stepper-input {
+  display: inline-flex;
   width: 36px;
   height: 30px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
   padding: 0 3px;
+  padding-top: 0;
+  padding-bottom: 0;
   color: #1f2933;
   background: #fff;
   border: 0;
@@ -65,7 +71,9 @@
   border-left: 1px solid #d8dde2;
   font-size: 13px;
   font-weight: 850;
+  line-height: 1 !important;
   text-align: center;
+  vertical-align: middle;
   appearance: textfield;
   -moz-appearance: textfield;
 }
@@ -120,9 +128,17 @@
   }
 
   .quantity-stepper-input {
+    display: inline-flex;
     width: 34px;
     height: 28px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0;
+    padding-bottom: 0;
     font-size: 12px;
+    line-height: 1 !important;
+    text-align: center;
   }
 
   .quantity-stepper-confirmation {
