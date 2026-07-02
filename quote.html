@@ -7,6 +7,8 @@
   <title>Quote List | SteamSelector Beta</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="catalog-layout.css" />
+  <link rel="stylesheet" href="quantity-stepper.css?v=quote-compact-1" />
+  <link rel="stylesheet" href="quote-layout.css?v=quote-compact-1" />
 </head>
 <body class="quote-page">
   <div id="siteHeaderMount"></div>
@@ -16,23 +18,63 @@
     <header class="quote-heading catalog-heading">
       <p class="eyebrow">Quote List</p>
       <h1>Quote List</h1>
-      <p>Set quantities and optional notes, then use the list as the starting point for a quote request.</p>
+      <p>Review your items, adjust quantities, then submit your quote request to our team.</p>
     </header>
 
     <section class="quote-card">
-      <p class="product-doc-note">Set quantities and optional notes for the products in your quote list.</p>
-      <div id="quoteEmptyState" class="catalog-empty-state" hidden>Your quote list is empty. Browse categories to add a product.</div>
-      <div class="quote-table-wrap">
-        <table class="quote-table">
-          <thead>
-            <tr><th>Image</th><th>Product</th><th>Qty</th><th>Notes</th><th></th></tr>
-          </thead>
-          <tbody id="quoteTableBody"></tbody>
-        </table>
+      <div class="quote-toolbar" aria-label="Quote list tools">
+        <button id="emailQuoteButton" class="btn btn-secondary" type="button">Email Quote</button>
+        <button id="printQuoteButton" class="btn btn-secondary" type="button">Print Quote</button>
       </div>
+
+      <div id="quoteEmptyState" class="catalog-empty-state" hidden>Your quote list is empty. Browse categories to add a product.</div>
+
+      <section id="activeQuoteSection" class="quote-list-section" aria-labelledby="activeQuoteHeading">
+        <h2 id="activeQuoteHeading" class="quote-list-section-title">Active Items <span id="activeQuoteCount">(0)</span></h2>
+        <div class="quote-table-wrap">
+          <table class="quote-table" aria-label="Active quote items">
+            <colgroup>
+              <col class="quote-col-photo" />
+              <col class="quote-col-qty" />
+              <col class="quote-col-model" />
+              <col />
+            </colgroup>
+            <thead>
+              <tr><th>Photo</th><th>Qty</th><th>Model</th><th>Description</th></tr>
+            </thead>
+            <tbody id="quoteTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div id="quoteSummary" class="quote-summary" hidden>
+        <span class="quote-summary-icon" aria-hidden="true">🛒</span>
+        <div class="quote-summary-count"><span>Total Items</span><strong id="quoteTotalItems">0 items</strong></div>
+        <div class="quote-summary-note">Pricing will be provided after you submit your quote request.</div>
+      </div>
+
+      <section id="savedQuoteSection" class="quote-list-section" aria-labelledby="savedQuoteHeading" hidden>
+        <h2 id="savedQuoteHeading" class="quote-list-section-title">Saved for Later <span id="savedQuoteCount">(0)</span></h2>
+        <div class="quote-table-wrap">
+          <table class="quote-table" aria-label="Saved quote items">
+            <colgroup>
+              <col class="quote-col-photo" />
+              <col class="quote-col-qty" />
+              <col class="quote-col-model" />
+              <col />
+            </colgroup>
+            <thead>
+              <tr><th>Photo</th><th>Qty</th><th>Model</th><th>Description</th></tr>
+            </thead>
+            <tbody id="savedQuoteTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
       <div id="quoteActions" class="quote-actions" hidden>
-        <button id="copyQuoteButton" class="btn btn-primary" type="button">Copy Quote List</button>
-        <button id="clearQuoteButton" class="btn btn-secondary" type="button">Clear List</button>
+        <button id="submitQuoteButton" class="btn btn-primary" type="button">Submit Quote Request</button>
+        <button id="copyQuoteButton" class="btn btn-secondary" type="button">Copy Quote List</button>
+        <button id="clearQuoteButton" class="btn btn-secondary" type="button">Clear Active List</button>
       </div>
       <p id="quoteMessage" class="catalog-status" role="status"></p>
     </section>
@@ -44,6 +86,6 @@
   <script src="products.js"></script>
   <script src="catalog-core.js"></script>
   <script src="site-header.js?v=projects-1"></script>
-  <script src="quote-page.js"></script>
+  <script src="quote-page.js?v=compact-quote-layout-1"></script>
 </body>
 </html>
