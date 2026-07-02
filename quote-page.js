@@ -5,6 +5,7 @@
   const core = window.SteamSelectorCore;
   const productApi = window.SteamSelectorProducts;
   const SAVED_STORAGE_KEY = "steamselector:saved-quote-items";
+  const VIEW_STORAGE_KEY = "steamselector:quote-mobile-view";
 
   if (!core || !productApi) return;
 
@@ -19,9 +20,11 @@
   const activeCount = document.getElementById("activeQuoteCount");
   const savedCount = document.getElementById("savedQuoteCount");
   const totalItems = document.getElementById("quoteTotalItems");
+  const viewContainer = document.getElementById("quoteViewContainer");
+  const viewButtons = Array.from(document.querySelectorAll("[data-quote-view]"));
 
   if (!activeTableBody || !savedTableBody || !emptyState || !activeSection || !savedSection
-    || !actions || !summary || !message || !activeCount || !savedCount || !totalItems) return;
+    || !actions || !summary || !message || !activeCount || !savedCount || !totalItems || !viewContainer) return;
 
   let confirmation = null;
   let confirmationTimer = null;
@@ -30,6 +33,33 @@
 
   function safeQuantity(value) {
     return core.quote.safeQuantity(value);
+  }
+
+  function getStoredView() {
+    try {
+      return window.localStorage.getItem(VIEW_STORAGE_KEY) === "card" ? "card" : "table";
+    } catch (error) {
+      return "table";
+    }
+  }
+
+  function applyView(view, persist) {
+    const isCardView = view === "card";
+    viewContainer.classList.toggle("is-card-view", isCardView);
+
+    viewButtons.forEach(function (button) {
+      const isActive = button.getAttribute("data-quote-view") === view;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+
+    if (persist) {
+      try {
+        window.localStorage.setItem(VIEW_STORAGE_KEY, isCardView ? "card" : "table");
+      } catch (error) {
+        // The visual toggle still works if browser storage is unavailable.
+      }
+    }
   }
 
   function icon(name) {
@@ -251,6 +281,12 @@
     }
   });
 
+  viewButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      applyView(button.getAttribute("data-quote-view"), true);
+    });
+  });
+
   document.getElementById("clearQuoteButton").addEventListener("click", function () {
     core.quote.clear();
     window.dispatchEvent(new Event("steamselector:quote-updated"));
@@ -287,5 +323,6 @@
     message.textContent = "Quote request submission will be available in the next RFQ workflow step.";
   });
 
+  applyView(getStoredView(), false);
   render();
 })();
