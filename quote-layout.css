@@ -8,6 +8,10 @@
   padding: 14px;
 }
 
+.quote-view-toggle {
+  display: none;
+}
+
 .quote-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -304,5 +308,152 @@
     border-top: 1px solid #dfe4e8;
     border-left: 0;
     font-size: 10px;
+  }
+}
+
+/* Mobile layout switcher: table view is the default; cards are opt-in. */
+@media (max-width: 768px) {
+  .quote-view-toggle {
+    display: flex;
+    gap: 3px;
+    margin: 0 0 10px;
+    padding: 3px;
+    background: #f1f3f5;
+    border: 1px solid #d5dbe1;
+    border-radius: 8px;
+  }
+
+  .quote-view-toggle-button {
+    flex: 1 1 0;
+    min-height: 34px;
+    padding: 6px 7px;
+    color: #394453;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .quote-view-toggle-button.is-active {
+    color: #fff;
+    background: #111316;
+    border-color: #111316;
+    box-shadow: 0 1px 2px rgba(17, 19, 22, .18);
+  }
+
+  /* Default mobile state: retain table columns and allow horizontal scrolling. */
+  .quote-card .quote-table-wrap {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .quote-card .quote-table {
+    min-width: 550px;
+    table-layout: fixed;
+  }
+
+  .quote-card .quote-table .quote-col-photo {
+    width: 64px;
+  }
+
+  .quote-card .quote-table .quote-col-qty {
+    width: 96px;
+  }
+
+  .quote-card .quote-table .quote-col-model {
+    width: 96px;
+  }
+
+  .quote-card .quote-table th,
+  .quote-card .quote-table td {
+    white-space: normal;
+  }
+
+  /* Card View: remove the wide table and stack each row into a full-width card. */
+  .quote-card.is-card-view .quote-table-wrap {
+    overflow: visible;
+    background: transparent;
+    border: 0;
+  }
+
+  .quote-card.is-card-view .quote-table,
+  .quote-card.is-card-view .quote-table tbody {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    table-layout: auto;
+  }
+
+  .quote-card.is-card-view .quote-table colgroup,
+  .quote-card.is-card-view .quote-table thead {
+    display: none;
+  }
+
+  .quote-card.is-card-view .quote-table tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .quote-card.is-card-view .quote-table tr {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 7px;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #d8dde2;
+    border-radius: 9px;
+    box-shadow: 0 2px 6px rgba(17, 19, 22, .04);
+  }
+
+  .quote-card.is-card-view .quote-table td {
+    display: block;
+    padding: 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .quote-card.is-card-view .quote-photo-cell {
+    text-align: left;
+  }
+
+  .quote-card.is-card-view .quote-photo-cell .product-thumb {
+    width: 46px;
+    height: 46px;
+    margin: 0;
+  }
+
+  .quote-card.is-card-view .quote-qty-cell {
+    text-align: left;
+  }
+
+  .quote-card.is-card-view .quote-qty-stack {
+    justify-items: start;
+  }
+
+  .quote-card.is-card-view .quote-model-cell {
+    text-align: left;
+  }
+
+  .quote-card.is-card-view .quote-model-cell .catalog-model-link {
+    color: #d82128;
+    font-size: 14px;
+  }
+
+  .quote-card.is-card-view .quote-description-cell {
+    width: 100%;
+    padding-top: 8px;
+    border-top: 1px solid #e4e8ed;
+  }
+
+  .quote-card.is-card-view .quote-description-cell p {
+    width: 100%;
+    color: #000000;
+    font-size: 13px;
+    line-height: 1.45;
   }
 }
