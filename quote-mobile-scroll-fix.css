@@ -1,5 +1,5 @@
 /*
-  Mobile Quote List table scrolling fix.
+  Mobile Quote List table scrolling and alignment fix.
   Loaded after quote-layout.css so Table View always preserves readable column widths.
 */
 
@@ -8,6 +8,11 @@
   .quote-card,
   .quote-list-section,
   .quote-table-wrap {
+    min-width: 0;
+  }
+
+  .quote-card:not(.is-card-view) .quote-list-section,
+  .quote-card:not(.is-card-view) .quote-table-wrap {
     min-width: 0;
   }
 
@@ -20,13 +25,17 @@
     overflow-y: hidden !important;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
   }
 
-  /* Use a real fixed fallback width so mobile does not compress the columns. */
+  /*
+    Keep the table genuinely wider than the phone viewport. This prevents the
+    browser from compressing Photo, Qty, Model, and Description into the card.
+  */
   .quote-card:not(.is-card-view) .quote-table {
     display: table !important;
-    width: 680px !important;
-    min-width: 680px !important;
+    width: 780px !important;
+    min-width: 780px !important;
     max-width: none !important;
     table-layout: fixed !important;
   }
@@ -40,7 +49,7 @@
   }
 
   .quote-card:not(.is-card-view) .quote-table .quote-col-model {
-    width: 162px !important;
+    width: 220px !important;
   }
 
   /* Keep all table columns at their defined width rather than allowing browser compression. */
@@ -55,9 +64,21 @@
     white-space: normal;
   }
 
+  /* Model header and values stay left aligned, full-width, and never ellipsize. */
+  .quote-card:not(.is-card-view) .quote-table th:nth-child(3),
+  .quote-card:not(.is-card-view) .quote-table .quote-model-cell {
+    min-width: 220px !important;
+    width: 220px !important;
+    text-align: left !important;
+  }
+
   .quote-card:not(.is-card-view) .quote-model-cell .catalog-model-link {
-    overflow: visible;
-    text-overflow: clip;
+    display: inline-block;
+    width: max-content !important;
+    min-width: 0;
+    max-width: none !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
     white-space: nowrap;
   }
 
