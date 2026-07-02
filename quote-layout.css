@@ -1,0 +1,308 @@
+/*
+  Compact Quote List layout.
+  Loaded after catalog-layout.css so quote-specific table changes do not alter
+  catalog or product result tables.
+*/
+
+.quote-page .quote-card {
+  padding: 14px;
+}
+
+.quote-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.quote-toolbar .btn {
+  min-height: 36px;
+  padding: 7px 12px;
+}
+
+.quote-list-section + .quote-list-section {
+  margin-top: 20px;
+}
+
+.quote-list-section-title {
+  margin: 0 0 8px;
+  color: var(--beta-ink);
+  font-size: 18px;
+  font-weight: 850;
+}
+
+.quote-table-wrap {
+  width: 100%;
+  margin-top: 0;
+  overflow: hidden;
+  border-color: #d8dde2;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.quote-table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.quote-table .quote-col-photo {
+  width: 66px;
+}
+
+.quote-table .quote-col-qty {
+  width: 94px;
+}
+
+.quote-table .quote-col-model {
+  width: 82px;
+}
+
+.quote-table th {
+  padding: 8px 6px;
+  color: #fff;
+  background: #101318;
+  border-right: 1px solid #313640;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  line-height: 1.1;
+  text-align: center;
+  text-transform: none;
+}
+
+.quote-table th:last-child {
+  border-right: 0;
+  text-align: left;
+}
+
+.quote-table td {
+  padding: 6px 5px;
+  border-right: 1px solid #e4e8ed;
+  border-bottom: 1px solid #e4e8ed;
+  color: #111316;
+  font-size: 12px;
+  line-height: 1.35;
+  vertical-align: middle;
+}
+
+.quote-table td:last-child {
+  border-right: 0;
+}
+
+.quote-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.quote-photo-cell {
+  text-align: center;
+}
+
+.quote-photo-cell .product-thumb {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto;
+  border-radius: 6px;
+}
+
+.quote-model-cell {
+  text-align: center;
+}
+
+.quote-model-cell .catalog-model-link {
+  display: inline-block;
+  overflow: hidden;
+  max-width: 100%;
+  color: #d82128;
+  font-size: 12px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quote-description-cell {
+  color: #000000;
+}
+
+.quote-description-cell p {
+  margin: 0;
+  color: #000000;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.quote-qty-cell {
+  padding-right: 4px !important;
+  padding-left: 4px !important;
+  text-align: center;
+}
+
+.quote-qty-stack {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.quote-save-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 0;
+  color: #4a5564;
+  background: transparent;
+  border: 0;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.quote-save-button:hover,
+.quote-save-button:focus-visible {
+  color: var(--beta-red);
+  outline: none;
+}
+
+.quote-save-icon {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 13px;
+}
+
+.quote-summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.5fr);
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px;
+  color: #111316;
+  background: #fbfcfd;
+  border: 1px solid #dfe4e8;
+  border-radius: 9px;
+}
+
+.quote-summary-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid #e0e5ea;
+  border-radius: 7px;
+  font-size: 20px;
+}
+
+.quote-summary-count {
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+}
+
+.quote-summary-count strong {
+  font-size: 15px;
+}
+
+.quote-summary-note {
+  padding-left: 12px;
+  border-left: 1px solid #dfe4e8;
+  color: #000000;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.quote-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.quote-actions .btn {
+  width: 100%;
+}
+
+@media (max-width: 740px) {
+  .quote-page .quote-card {
+    padding: 10px;
+  }
+
+  .quote-toolbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-bottom: 14px;
+  }
+
+  .quote-toolbar .btn {
+    min-height: 34px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .quote-list-section + .quote-list-section {
+    margin-top: 16px;
+  }
+
+  .quote-list-section-title {
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+
+  .quote-table .quote-col-photo {
+    width: 58px;
+  }
+
+  .quote-table .quote-col-qty {
+    width: 88px;
+  }
+
+  .quote-table .quote-col-model {
+    width: 72px;
+  }
+
+  .quote-table th {
+    padding: 7px 4px;
+    font-size: 9px;
+  }
+
+  .quote-table td {
+    padding: 5px 4px;
+    font-size: 11px;
+  }
+
+  .quote-photo-cell .product-thumb {
+    width: 36px;
+    height: 36px;
+  }
+
+  .quote-model-cell .catalog-model-link,
+  .quote-description-cell p {
+    font-size: 11px;
+  }
+
+  .quote-save-button {
+    font-size: 9px;
+  }
+
+  .quote-save-icon {
+    width: 12px;
+    height: 12px;
+    flex-basis: 12px;
+  }
+
+  .quote-summary {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .quote-summary-note {
+    grid-column: 1 / -1;
+    padding-top: 8px;
+    padding-left: 0;
+    border-top: 1px solid #dfe4e8;
+    border-left: 0;
+    font-size: 10px;
+  }
+}
