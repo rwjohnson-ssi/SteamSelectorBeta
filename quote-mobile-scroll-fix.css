@@ -1,0 +1,68 @@
+/*
+  Mobile Quote List table scrolling fix.
+  Loaded after quote-layout.css so Table View always preserves readable column widths.
+*/
+
+@media (max-width: 768px) {
+  /* Let the table wrapper become the horizontal scroller without widening the page. */
+  .quote-card,
+  .quote-list-section,
+  .quote-table-wrap {
+    min-width: 0;
+  }
+
+  .quote-card:not(.is-card-view) .quote-table-wrap {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  /* Use a real fixed fallback width so mobile does not compress the columns. */
+  .quote-card:not(.is-card-view) .quote-table {
+    display: table !important;
+    width: 680px !important;
+    min-width: 680px !important;
+    max-width: none !important;
+    table-layout: fixed !important;
+  }
+
+  .quote-card:not(.is-card-view) .quote-table .quote-col-photo {
+    width: 78px !important;
+  }
+
+  .quote-card:not(.is-card-view) .quote-table .quote-col-qty {
+    width: 118px !important;
+  }
+
+  .quote-card:not(.is-card-view) .quote-table .quote-col-model {
+    width: 162px !important;
+  }
+
+  /* Keep all table columns at their defined width rather than allowing browser compression. */
+  .quote-card:not(.is-card-view) .quote-table th,
+  .quote-card:not(.is-card-view) .quote-table td,
+  .quote-card:not(.is-card-view) .quote-table col {
+    flex-shrink: 0;
+  }
+
+  .quote-card:not(.is-card-view) .quote-table th,
+  .quote-card:not(.is-card-view) .quote-table td {
+    white-space: normal;
+  }
+
+  .quote-card:not(.is-card-view) .quote-model-cell .catalog-model-link {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+  }
+
+  .quote-card:not(.is-card-view) .quote-description-cell p {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+}
