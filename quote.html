@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="catalog-layout.css" />
   <link rel="stylesheet" href="quantity-stepper.css?v=quote-compact-1" />
-  <link rel="stylesheet" href="quote-layout.css?v=quote-compact-1" />
+  <link rel="stylesheet" href="quote-layout.css?v=quote-view-toggle-1" />
 </head>
 <body class="quote-page">
   <div id="siteHeaderMount"></div>
@@ -21,7 +21,12 @@
       <p>Review your items, adjust quantities, then submit your quote request to our team.</p>
     </header>
 
-    <section class="quote-card">
+    <div class="quote-view-toggle" role="group" aria-label="Mobile quote list layout">
+      <button class="quote-view-toggle-button is-active" type="button" data-quote-view="table" aria-pressed="true">📋 Table View</button>
+      <button class="quote-view-toggle-button" type="button" data-quote-view="card" aria-pressed="false">🎴 Card View</button>
+    </div>
+
+    <section id="quoteViewContainer" class="quote-card">
       <div class="quote-toolbar" aria-label="Quote list tools">
         <button id="emailQuoteButton" class="btn btn-secondary" type="button">Email Quote</button>
         <button id="printQuoteButton" class="btn btn-secondary" type="button">Print Quote</button>
@@ -86,6 +91,6 @@
   <script src="products.js"></script>
   <script src="catalog-core.js"></script>
   <script src="site-header.js?v=projects-1"></script>
-  <script src="quote-page.js?v=compact-quote-layout-1"></script>
+  <script src="quote-page.js?v=quote-view-toggle-1"></script>
 </body>
 </html>
