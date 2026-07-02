@@ -36,6 +36,17 @@
   line-height: 1;
 }
 
+.quantity-stepper-button svg,
+.quote-save-button svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .quantity-stepper-button:hover,
 .quantity-stepper-button:focus-visible {
   color: #fff;
@@ -100,6 +111,12 @@
     width: 26px;
     height: 28px;
     font-size: 15px;
+  }
+
+  .quantity-stepper-button svg,
+  .quote-save-button svg {
+    width: 13px;
+    height: 13px;
   }
 
   .quantity-stepper-input {
