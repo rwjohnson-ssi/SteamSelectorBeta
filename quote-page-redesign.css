@@ -1,0 +1,461 @@
+/*
+  Quote List redesign
+  This file is intentionally isolated from the shared catalog table styles.
+  Every class begins with qlx- so the quote page has one predictable layout
+  system across desktop, mobile table view, and mobile card view.
+*/
+
+.qlx-shell {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #d8dde2;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(17, 19, 22, .05);
+}
+
+.qlx-view-toggle {
+  display: none;
+}
+
+.qlx-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.qlx-tools .btn {
+  min-height: 38px;
+  padding: 8px 13px;
+}
+
+.qlx-section + .qlx-section {
+  margin-top: 22px;
+}
+
+.qlx-section__title {
+  margin: 0 0 8px;
+  color: #111316;
+  font-size: 18px;
+  font-weight: 850;
+  line-height: 1.1;
+}
+
+.qlx-table-viewport {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #d8dde2;
+  border-radius: 9px;
+}
+
+.qlx-table {
+  --qlx-columns: 72px 104px minmax(132px, .85fr) minmax(0, 1.8fr);
+  width: 100%;
+  min-width: 0;
+}
+
+.qlx-table__header,
+.qlx-item {
+  display: grid;
+  grid-template-columns: var(--qlx-columns);
+  width: 100%;
+  min-width: 0;
+}
+
+.qlx-table__header {
+  min-height: 40px;
+  color: #fff;
+  background: #101318;
+}
+
+.qlx-table__heading,
+.qlx-cell {
+  min-width: 0;
+  box-sizing: border-box;
+  border-right: 1px solid #e4e8ed;
+}
+
+.qlx-table__heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 7px;
+  color: #fff;
+  border-right-color: #313640;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .03em;
+  line-height: 1.1;
+}
+
+.qlx-table__heading:nth-child(3),
+.qlx-table__heading:nth-child(4) {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.qlx-table__heading:last-child,
+.qlx-cell:last-child {
+  border-right: 0;
+}
+
+.qlx-item {
+  min-height: 86px;
+  background: #fff;
+}
+
+.qlx-item + .qlx-item {
+  border-top: 1px solid #e4e8ed;
+}
+
+.qlx-cell {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  min-height: 0;
+  padding: 8px 7px;
+  color: #111316;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.qlx-item__photo,
+.qlx-item__qty {
+  justify-content: center;
+  text-align: center;
+}
+
+.qlx-item__photo .product-thumb {
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  border-radius: 6px;
+}
+
+.qlx-item__model,
+.qlx-item__description {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.qlx-item__model .catalog-model-link {
+  display: block;
+  max-width: 100%;
+  color: #d82128;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+
+.qlx-item__description,
+.qlx-item__description p {
+  color: #000;
+}
+
+.qlx-item__description p {
+  width: 100%;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.qlx-quantity-stack {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.qlx-quantity-stack .quantity-stepper {
+  flex: 0 0 auto;
+}
+
+.qlx-save-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 0;
+  color: #4a5564;
+  background: transparent;
+  border: 0;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.qlx-save-button svg {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.qlx-save-button:hover,
+.qlx-save-button:focus-visible {
+  color: #d82128;
+  outline: none;
+}
+
+.qlx-summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.45fr);
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px;
+  color: #111316;
+  background: #fbfcfd;
+  border: 1px solid #dfe4e8;
+  border-radius: 9px;
+}
+
+.qlx-summary__icon {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid #e0e5ea;
+  border-radius: 7px;
+  font-size: 20px;
+}
+
+.qlx-summary__count {
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+}
+
+.qlx-summary__count strong {
+  font-size: 15px;
+}
+
+.qlx-summary__note {
+  padding-left: 12px;
+  color: #000;
+  border-left: 1px solid #dfe4e8;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.qlx-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.qlx-actions .btn {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .qlx-shell {
+    min-width: 0;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .qlx-view-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin: 0 0 10px;
+    padding: 3px;
+    background: #f1f3f5;
+    border: 1px solid #d5dbe1;
+    border-radius: 8px;
+  }
+
+  .qlx-view-toggle__button {
+    min-height: 34px;
+    padding: 6px 7px;
+    color: #394453;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .qlx-view-toggle__button.is-active {
+    color: #fff;
+    background: #111316;
+    border-color: #111316;
+    box-shadow: 0 1px 2px rgba(17, 19, 22, .18);
+  }
+
+  .qlx-tools {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-bottom: 14px;
+  }
+
+  .qlx-tools .btn {
+    min-height: 34px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .qlx-section + .qlx-section {
+    margin-top: 16px;
+  }
+
+  .qlx-section__title {
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+
+  .qlx-summary {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .qlx-summary__note {
+    grid-column: 1 / -1;
+    padding-top: 8px;
+    padding-left: 0;
+    border-top: 1px solid #dfe4e8;
+    border-left: 0;
+    font-size: 10px;
+  }
+
+  /* Table View is intentionally a true scrollable comparison grid. */
+  .qlx-shell.is-table-view .qlx-table-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  .qlx-shell.is-table-view .qlx-table {
+    --qlx-columns: 66px 98px 140px minmax(300px, 1fr);
+    min-width: 650px;
+  }
+
+  .qlx-shell.is-table-view .qlx-table__heading {
+    min-height: 38px;
+    padding: 7px 5px;
+    font-size: 10px;
+  }
+
+  .qlx-shell.is-table-view .qlx-item {
+    min-height: 78px;
+  }
+
+  .qlx-shell.is-table-view .qlx-cell {
+    min-height: 78px;
+    padding: 6px 5px;
+    font-size: 11px;
+  }
+
+  .qlx-shell.is-table-view .qlx-item__photo .product-thumb {
+    width: 38px;
+    height: 38px;
+  }
+
+  .qlx-shell.is-table-view .qlx-item__model .catalog-model-link,
+  .qlx-shell.is-table-view .qlx-item__description p {
+    font-size: 11px;
+  }
+
+  .qlx-shell.is-table-view .qlx-save-button {
+    font-size: 9px;
+  }
+
+  /* Card View is the default mobile layout: no column compression, no scrolling. */
+  .qlx-shell.is-card-view .qlx-table-viewport {
+    overflow: visible;
+    background: transparent;
+    border: 0;
+  }
+
+  .qlx-shell.is-card-view .qlx-table__header {
+    display: none;
+  }
+
+  .qlx-shell.is-card-view .qlx-table {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .qlx-shell.is-card-view .qlx-table__body {
+    display: grid;
+    gap: 10px;
+  }
+
+  .qlx-shell.is-card-view .qlx-item {
+    grid-template-columns: 52px minmax(0, 1fr);
+    grid-template-areas:
+      "photo model"
+      "qty qty"
+      "description description";
+    gap: 9px 10px;
+    min-height: 0;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #d8dde2;
+    border-radius: 9px;
+    box-shadow: 0 2px 6px rgba(17, 19, 22, .04);
+  }
+
+  .qlx-shell.is-card-view .qlx-item + .qlx-item {
+    border-top: 1px solid #d8dde2;
+  }
+
+  .qlx-shell.is-card-view .qlx-cell {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__photo {
+    grid-area: photo;
+    justify-content: flex-start;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__photo .product-thumb {
+    width: 46px;
+    height: 46px;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__model {
+    grid-area: model;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__model .catalog-model-link {
+    font-size: 14px;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__qty {
+    grid-area: qty;
+    justify-content: flex-start;
+  }
+
+  .qlx-shell.is-card-view .qlx-quantity-stack {
+    justify-items: start;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__description {
+    grid-area: description;
+    display: block;
+    padding-top: 9px;
+    border-top: 1px solid #e4e8ed;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__description p {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
