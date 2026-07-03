@@ -121,9 +121,9 @@
     const movementLabel = saved ? "Move to list" : "Save for later";
     const hasConfirmation = confirmation && confirmation.id === product.id && confirmation.source === source;
 
-    return "<tr data-quote-source=\"" + source + "\" data-quote-item=\"" + core.escapeHtml(product.id) + "\">"
-      + "<td class=\"quote-photo-cell\">" + core.renderProductVisual(product, category, "product-thumb") + "</td>"
-      + "<td class=\"quote-qty-cell\"><div class=\"quote-qty-stack\">"
+    return "<div class=\"quote-table-row\" role=\"row\" data-quote-source=\"" + source + "\" data-quote-item=\"" + core.escapeHtml(product.id) + "\">"
+      + "<div class=\"quote-table-cell quote-photo-cell\" role=\"cell\">" + core.renderProductVisual(product, category, "product-thumb") + "</div>"
+      + "<div class=\"quote-table-cell quote-qty-cell\" role=\"cell\"><div class=\"quote-qty-stack\">"
       + "<div class=\"quantity-stepper\">"
       + "<button class=\"quantity-stepper-button\" type=\"button\" data-quote-action=\"" + lowerAction + "\" aria-label=\"" + core.escapeHtml(lowerLabel) + "\">" + lowerIcon + "</button>"
       + "<span class=\"quantity-stepper-input\" aria-label=\"Quantity\">" + quantity + "</span>"
@@ -132,10 +132,10 @@
       + "</div>"
       + "<button class=\"quote-save-button\" type=\"button\" data-quote-action=\"" + movementAction + "\">"
       + icon("bookmark").replace("<svg ", "<svg class=\"quote-save-icon\" ") + movementLabel + "</button>"
-      + "</div></td>"
-      + "<td class=\"quote-model-cell\"><a class=\"catalog-model-link\" href=\"" + core.productUrl(product) + "\">" + core.escapeHtml(product.id) + "</a></td>"
-      + "<td class=\"quote-description-cell\"><p>" + core.escapeHtml(product.summary) + "</p></td>"
-      + "</tr>";
+      + "</div></div>"
+      + "<div class=\"quote-table-cell quote-model-cell\" role=\"cell\"><a class=\"catalog-model-link\" href=\"" + core.productUrl(product) + "\">" + core.escapeHtml(product.id) + "</a></div>"
+      + "<div class=\"quote-table-cell quote-description-cell\" role=\"cell\"><p>" + core.escapeHtml(product.summary) + "</p></div>"
+      + "</div>";
   }
 
   function showConfirmation(id, source) {
