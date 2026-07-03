@@ -7,8 +7,8 @@
   <title>Quote List | SteamSelector Beta</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="catalog-layout.css" />
-  <link rel="stylesheet" href="quantity-stepper.css?v=quote-stepper-clean-1" />
-  <link rel="stylesheet" href="quote-layout.css?v=quote-grid-alignment-3" />
+  <link rel="stylesheet" href="quantity-stepper.css?v=quote-redesign-1" />
+  <link rel="stylesheet" href="quote-page-redesign.css?v=quote-redesign-1" />
 </head>
 <body class="quote-page">
   <div id="siteHeaderMount"></div>
@@ -22,13 +22,13 @@
       <p>Review your items, adjust quantities, then submit your quote request to our team.</p>
     </header>
 
-    <div class="quote-view-toggle" role="group" aria-label="Mobile quote list layout">
-      <button class="quote-view-toggle-button is-active" type="button" data-quote-view="table" aria-pressed="true">📋 Table View</button>
-      <button class="quote-view-toggle-button" type="button" data-quote-view="card" aria-pressed="false">🎴 Card View</button>
+    <div class="qlx-view-toggle" role="group" aria-label="Quote list layout">
+      <button class="qlx-view-toggle__button" type="button" data-quote-view="table" aria-pressed="false">📋 Table View</button>
+      <button class="qlx-view-toggle__button is-active" type="button" data-quote-view="card" aria-pressed="true">🎴 Card View</button>
     </div>
 
-    <section id="quoteViewContainer" class="quote-card">
-      <div class="quote-toolbar" aria-label="Quote list tools">
+    <section id="quoteViewContainer" class="qlx-shell is-card-view">
+      <div class="qlx-tools" aria-label="Quote list tools">
         <button id="emailQuoteButton" class="btn btn-secondary" type="button">Email Quote</button>
         <button id="printQuoteButton" class="btn btn-secondary" type="button">Print Quote</button>
       </div>
@@ -37,46 +37,46 @@
         Your quote list is empty. Browse categories to add a product.
       </div>
 
-      <section id="activeQuoteSection" class="quote-list-section" aria-labelledby="activeQuoteHeading">
-        <h2 id="activeQuoteHeading" class="quote-list-section-title">Active Items <span id="activeQuoteCount">(0)</span></h2>
-        <div class="quote-table-wrap">
-          <div class="quote-table" role="table" aria-label="Active quote items">
-            <div class="quote-table-head" role="row">
-              <div class="quote-table-heading" role="columnheader">Photo</div>
-              <div class="quote-table-heading" role="columnheader">Qty</div>
-              <div class="quote-table-heading" role="columnheader">Model</div>
-              <div class="quote-table-heading" role="columnheader">Description</div>
+      <section id="activeQuoteSection" class="qlx-section" aria-labelledby="activeQuoteHeading">
+        <h2 id="activeQuoteHeading" class="qlx-section__title">Active Items <span id="activeQuoteCount">(0)</span></h2>
+        <div class="qlx-table-viewport">
+          <div class="qlx-table" role="table" aria-label="Active quote items">
+            <div class="qlx-table__header" role="row">
+              <div class="qlx-table__heading" role="columnheader">Photo</div>
+              <div class="qlx-table__heading" role="columnheader">Qty</div>
+              <div class="qlx-table__heading" role="columnheader">Model</div>
+              <div class="qlx-table__heading" role="columnheader">Description</div>
             </div>
-            <div id="quoteTableBody" class="quote-table-body" role="rowgroup"></div>
+            <div id="quoteTableBody" class="qlx-table__body" role="rowgroup"></div>
           </div>
         </div>
       </section>
 
-      <div id="quoteSummary" class="quote-summary" hidden>
-        <span class="quote-summary-icon" aria-hidden="true">🛒</span>
-        <div class="quote-summary-count">
+      <div id="quoteSummary" class="qlx-summary" hidden>
+        <span class="qlx-summary__icon" aria-hidden="true">🛒</span>
+        <div class="qlx-summary__count">
           <span>Total Items</span>
           <strong id="quoteTotalItems">0 items</strong>
         </div>
-        <div class="quote-summary-note">Pricing will be provided after you submit your quote request.</div>
+        <div class="qlx-summary__note">Pricing will be provided after you submit your quote request.</div>
       </div>
 
-      <section id="savedQuoteSection" class="quote-list-section" aria-labelledby="savedQuoteHeading" hidden>
-        <h2 id="savedQuoteHeading" class="quote-list-section-title">Saved for Later <span id="savedQuoteCount">(0)</span></h2>
-        <div class="quote-table-wrap">
-          <div class="quote-table" role="table" aria-label="Saved quote items">
-            <div class="quote-table-head" role="row">
-              <div class="quote-table-heading" role="columnheader">Photo</div>
-              <div class="quote-table-heading" role="columnheader">Qty</div>
-              <div class="quote-table-heading" role="columnheader">Model</div>
-              <div class="quote-table-heading" role="columnheader">Description</div>
+      <section id="savedQuoteSection" class="qlx-section" aria-labelledby="savedQuoteHeading" hidden>
+        <h2 id="savedQuoteHeading" class="qlx-section__title">Saved for Later <span id="savedQuoteCount">(0)</span></h2>
+        <div class="qlx-table-viewport">
+          <div class="qlx-table" role="table" aria-label="Saved quote items">
+            <div class="qlx-table__header" role="row">
+              <div class="qlx-table__heading" role="columnheader">Photo</div>
+              <div class="qlx-table__heading" role="columnheader">Qty</div>
+              <div class="qlx-table__heading" role="columnheader">Model</div>
+              <div class="qlx-table__heading" role="columnheader">Description</div>
             </div>
-            <div id="savedQuoteTableBody" class="quote-table-body" role="rowgroup"></div>
+            <div id="savedQuoteTableBody" class="qlx-table__body" role="rowgroup"></div>
           </div>
         </div>
       </section>
 
-      <div id="quoteActions" class="quote-actions" hidden>
+      <div id="quoteActions" class="qlx-actions" hidden>
         <button id="submitQuoteButton" class="btn btn-primary" type="button">Submit Quote Request</button>
         <button id="copyQuoteButton" class="btn btn-secondary" type="button">Copy Quote List</button>
         <button id="clearQuoteButton" class="btn btn-secondary" type="button">Clear Active List</button>
@@ -93,6 +93,6 @@
   <script src="products.js"></script>
   <script src="catalog-core.js"></script>
   <script src="site-header.js?v=projects-1"></script>
-  <script src="quote-page.js?v=quote-grid-stable-2"></script>
+  <script src="quote-page-redesign.js?v=quote-redesign-1"></script>
 </body>
 </html>
