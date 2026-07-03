@@ -1,0 +1,38 @@
+/* Final mobile Quote List grid and quantity control overrides. */
+
+@media (max-width: 768px) {
+  .quote-card:not(.is-card-view) .quantity-stepper {
+    display: inline-grid !important;
+    width: 78px !important;
+    max-width: 85px !important;
+    height: 26px !important;
+    grid-template-columns: 24px 30px 24px !important;
+    align-items: center;
+  }
+
+  .quote-card:not(.is-card-view) .quantity-stepper-button {
+    width: 24px !important;
+    height: 26px !important;
+    padding: 0 !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+  }
+
+  .quote-card:not(.is-card-view) .quantity-stepper-input {
+    display: inline-flex !important;
+    width: 30px !important;
+    height: 26px !important;
+    box-sizing: border-box;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 2px !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+  }
+
+  .quote-card:not(.is-card-view) .quantity-stepper-button svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+}
