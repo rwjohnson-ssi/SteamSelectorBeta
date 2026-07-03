@@ -1,6 +1,6 @@
 /*
-  Mobile Quote List table scrolling and alignment fix.
-  Loaded after quote-layout.css so Table View always preserves readable column widths.
+  Mobile Quote List table scrolling, proportions, and alignment fix.
+  Loaded after quote-layout.css so Table View retains readable proportions.
 */
 
 @media (max-width: 768px) {
@@ -29,46 +29,62 @@
   }
 
   /*
-    Keep the table genuinely wider than the phone viewport. This prevents the
-    browser from compressing Photo, Qty, Model, and Description into the card.
+    Keep Table View wider than the phone viewport without pushing Description
+    entirely off screen. The first three columns use compact fixed widths and
+    Description receives all remaining table space.
   */
   .quote-card:not(.is-card-view) .quote-table {
     display: table !important;
-    width: 780px !important;
-    min-width: 780px !important;
+    width: 650px !important;
+    min-width: 650px !important;
     max-width: none !important;
     table-layout: fixed !important;
   }
 
   .quote-card:not(.is-card-view) .quote-table .quote-col-photo {
-    width: 78px !important;
+    width: 70px !important;
   }
 
   .quote-card:not(.is-card-view) .quote-table .quote-col-qty {
-    width: 118px !important;
+    width: 96px !important;
   }
 
   .quote-card:not(.is-card-view) .quote-table .quote-col-model {
-    width: 220px !important;
+    width: 126px !important;
+    max-width: 126px !important;
   }
 
-  /* Keep all table columns at their defined width rather than allowing browser compression. */
+  /* Description intentionally has no fixed col width: it fills the remaining width. */
+  .quote-card:not(.is-card-view) .quote-table .quote-col-model + col {
+    width: auto !important;
+  }
+
+  /* Keep designated column widths intact rather than allowing browser compression. */
   .quote-card:not(.is-card-view) .quote-table th,
   .quote-card:not(.is-card-view) .quote-table td,
   .quote-card:not(.is-card-view) .quote-table col {
     flex-shrink: 0;
   }
 
-  .quote-card:not(.is-card-view) .quote-table th,
+  .quote-card:not(.is-card-view) .quote-table th {
+    padding: 7px 5px;
+    font-size: 11px;
+    line-height: 1.1;
+  }
+
   .quote-card:not(.is-card-view) .quote-table td {
+    padding: 6px 5px;
+    font-size: 11px;
+    line-height: 1.3;
     white-space: normal;
   }
 
-  /* Model header and values stay left aligned, full-width, and never ellipsize. */
+  /* Model stays compact and cleanly left-aligned without an ellipsis. */
   .quote-card:not(.is-card-view) .quote-table th:nth-child(3),
   .quote-card:not(.is-card-view) .quote-table .quote-model-cell {
-    min-width: 220px !important;
-    width: 220px !important;
+    width: 126px !important;
+    min-width: 126px !important;
+    max-width: 126px !important;
     text-align: left !important;
   }
 
@@ -78,12 +94,26 @@
     min-width: 0;
     max-width: none !important;
     overflow: visible !important;
+    color: #d82128;
+    font-size: 12px !important;
+    line-height: 1.15;
     text-overflow: clip !important;
     white-space: nowrap;
   }
 
+  /* Description is the flexible column and remains crisp black. */
+  .quote-card:not(.is-card-view) .quote-description-cell {
+    width: auto !important;
+    color: #000000;
+  }
+
   .quote-card:not(.is-card-view) .quote-description-cell p {
+    width: auto;
     min-width: 0;
+    margin: 0;
     overflow-wrap: break-word;
+    color: #000000 !important;
+    font-size: 11px !important;
+    line-height: 1.35;
   }
 }
