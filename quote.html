@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="catalog-layout.css" />
   <link rel="stylesheet" href="quantity-stepper.css?v=quote-stepper-clean-1" />
-  <link rel="stylesheet" href="quote-layout.css?v=quote-cleanup-1" />
+  <link rel="stylesheet" href="quote-layout.css?v=quote-grid-stable-2" />
 </head>
 <body class="quote-page">
   <div id="siteHeaderMount"></div>
@@ -40,23 +40,15 @@
       <section id="activeQuoteSection" class="quote-list-section" aria-labelledby="activeQuoteHeading">
         <h2 id="activeQuoteHeading" class="quote-list-section-title">Active Items <span id="activeQuoteCount">(0)</span></h2>
         <div class="quote-table-wrap">
-          <table class="quote-table" aria-label="Active quote items">
-            <colgroup>
-              <col class="quote-col-photo" />
-              <col class="quote-col-qty" />
-              <col class="quote-col-model" />
-              <col />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>Photo</th>
-                <th>Qty</th>
-                <th>Model</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody id="quoteTableBody"></tbody>
-          </table>
+          <div class="quote-table" role="table" aria-label="Active quote items">
+            <div class="quote-table-head" role="row">
+              <div class="quote-table-heading" role="columnheader">Photo</div>
+              <div class="quote-table-heading" role="columnheader">Qty</div>
+              <div class="quote-table-heading" role="columnheader">Model</div>
+              <div class="quote-table-heading" role="columnheader">Description</div>
+            </div>
+            <div id="quoteTableBody" class="quote-table-body" role="rowgroup"></div>
+          </div>
         </div>
       </section>
 
@@ -72,23 +64,15 @@
       <section id="savedQuoteSection" class="quote-list-section" aria-labelledby="savedQuoteHeading" hidden>
         <h2 id="savedQuoteHeading" class="quote-list-section-title">Saved for Later <span id="savedQuoteCount">(0)</span></h2>
         <div class="quote-table-wrap">
-          <table class="quote-table" aria-label="Saved quote items">
-            <colgroup>
-              <col class="quote-col-photo" />
-              <col class="quote-col-qty" />
-              <col class="quote-col-model" />
-              <col />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>Photo</th>
-                <th>Qty</th>
-                <th>Model</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody id="savedQuoteTableBody"></tbody>
-          </table>
+          <div class="quote-table" role="table" aria-label="Saved quote items">
+            <div class="quote-table-head" role="row">
+              <div class="quote-table-heading" role="columnheader">Photo</div>
+              <div class="quote-table-heading" role="columnheader">Qty</div>
+              <div class="quote-table-heading" role="columnheader">Model</div>
+              <div class="quote-table-heading" role="columnheader">Description</div>
+            </div>
+            <div id="savedQuoteTableBody" class="quote-table-body" role="rowgroup"></div>
+          </div>
         </div>
       </section>
 
@@ -109,6 +93,6 @@
   <script src="products.js"></script>
   <script src="catalog-core.js"></script>
   <script src="site-header.js?v=projects-1"></script>
-  <script src="quote-page.js?v=quote-view-toggle-1"></script>
+  <script src="quote-page.js?v=quote-grid-stable-2"></script>
 </body>
 </html>
