@@ -7,16 +7,15 @@
   <title>Quote List | SteamSelector Beta</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="catalog-layout.css" />
-  <link rel="stylesheet" href="quantity-stepper.css?v=quote-stepper-compact-2" />
-  <link rel="stylesheet" href="quote-layout.css?v=quote-view-toggle-1" />
-  <link rel="stylesheet" href="quote-mobile-scroll-fix.css?v=mobile-alignment-6" />
-  <link rel="stylesheet" href="quote-mobile-grid-stepper.css?v=mobile-grid-stepper-2" />
+  <link rel="stylesheet" href="quantity-stepper.css?v=quote-stepper-clean-1" />
+  <link rel="stylesheet" href="quote-layout.css?v=quote-cleanup-1" />
 </head>
 <body class="quote-page">
   <div id="siteHeaderMount"></div>
 
   <main class="page quote-shell">
     <nav id="breadcrumbs" class="catalog-breadcrumbs" aria-label="Breadcrumb"></nav>
+
     <header class="quote-heading catalog-heading">
       <p class="eyebrow">Quote List</p>
       <h1>Quote List</h1>
@@ -34,7 +33,9 @@
         <button id="printQuoteButton" class="btn btn-secondary" type="button">Print Quote</button>
       </div>
 
-      <div id="quoteEmptyState" class="catalog-empty-state" hidden>Your quote list is empty. Browse categories to add a product.</div>
+      <div id="quoteEmptyState" class="catalog-empty-state" hidden>
+        Your quote list is empty. Browse categories to add a product.
+      </div>
 
       <section id="activeQuoteSection" class="quote-list-section" aria-labelledby="activeQuoteHeading">
         <h2 id="activeQuoteHeading" class="quote-list-section-title">Active Items <span id="activeQuoteCount">(0)</span></h2>
@@ -47,7 +48,12 @@
               <col />
             </colgroup>
             <thead>
-              <tr><th>Photo</th><th>Qty</th><th>Model</th><th>Description</th></tr>
+              <tr>
+                <th>Photo</th>
+                <th>Qty</th>
+                <th>Model</th>
+                <th>Description</th>
+              </tr>
             </thead>
             <tbody id="quoteTableBody"></tbody>
           </table>
@@ -56,7 +62,10 @@
 
       <div id="quoteSummary" class="quote-summary" hidden>
         <span class="quote-summary-icon" aria-hidden="true">🛒</span>
-        <div class="quote-summary-count"><span>Total Items</span><strong id="quoteTotalItems">0 items</strong></div>
+        <div class="quote-summary-count">
+          <span>Total Items</span>
+          <strong id="quoteTotalItems">0 items</strong>
+        </div>
         <div class="quote-summary-note">Pricing will be provided after you submit your quote request.</div>
       </div>
 
@@ -71,7 +80,12 @@
               <col />
             </colgroup>
             <thead>
-              <tr><th>Photo</th><th>Qty</th><th>Model</th><th>Description</th></tr>
+              <tr>
+                <th>Photo</th>
+                <th>Qty</th>
+                <th>Model</th>
+                <th>Description</th>
+              </tr>
             </thead>
             <tbody id="savedQuoteTableBody"></tbody>
           </table>
@@ -87,7 +101,9 @@
     </section>
   </main>
 
-  <footer class="site-footer"><div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div></footer>
+  <footer class="site-footer">
+    <div class="page"><strong>SteamSelector Beta</strong><span>Public test build</span></div>
+  </footer>
 
   <script src="categories.js?v=catalog-route-2"></script>
   <script src="products.js"></script>
