@@ -1,0 +1,86 @@
+/*
+  Mobile Card View refinement.
+  This file intentionally changes only .is-card-view so Table View remains
+  exactly as currently implemented in quote-page-redesign.css.
+*/
+
+@media (max-width: 768px) {
+  .qlx-shell.is-card-view .qlx-item {
+    grid-template-columns: 74px minmax(0, 1fr);
+    grid-template-areas:
+      "photo model"
+      "photo description"
+      "qty qty";
+    gap: 5px 12px;
+    min-height: 0;
+    padding: 12px;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__photo {
+    align-self: start;
+    justify-content: flex-start;
+    padding-top: 2px;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__photo .product-thumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__model {
+    align-items: flex-end;
+    min-height: 30px;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__model .catalog-model-link {
+    font-size: 14px;
+    line-height: 1.15;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__description {
+    display: block;
+    align-self: start;
+    padding: 0;
+    border-top: 0;
+  }
+
+  .qlx-shell.is-card-view .qlx-item__description p {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  /* Bottom utility row: quantity on the left, save/move action on the right. */
+  .qlx-shell.is-card-view .qlx-item__qty {
+    display: block;
+    min-height: 0;
+    margin-top: 5px;
+    padding: 9px 0 0;
+    border-top: 1px solid #e4e8ed;
+  }
+
+  .qlx-shell.is-card-view .qlx-quantity-stack {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .qlx-shell.is-card-view .qlx-quantity-stack .quantity-stepper {
+    flex: 0 0 auto;
+  }
+
+  .qlx-shell.is-card-view .qlx-save-button {
+    flex: 0 1 auto;
+    justify-content: flex-end;
+    color: #4a5564;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .qlx-shell.is-card-view .qlx-save-button svg {
+    width: 15px;
+    height: 15px;
+    flex-basis: 15px;
+  }
+}
