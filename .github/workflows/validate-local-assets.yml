@@ -1,0 +1,23 @@
+name: Validate Local Assets
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-local-assets:
+    name: Verify CSS and JavaScript references
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate local CSS and JavaScript assets
+        run: python tools/check_local_assets.py
