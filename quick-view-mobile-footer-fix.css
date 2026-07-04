@@ -1,20 +1,24 @@
 /*
   Mobile Quick View layout correction.
-  Keeps the action footer visible without allowing it to cover Quantity or Documents.
+  The modal content mount is #quickViewContent (not a .quick-view-content class).
+  These rules keep the action footer visible without covering Quantity or Documents.
 */
 
 @media (max-width: 740px) {
   .catalog-page .quick-view-dialog {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
     height: min(88dvh, 780px);
+    max-height: min(88dvh, 780px);
   }
 
-  .catalog-page .quick-view-content {
+  .catalog-page #quickViewContent {
     height: 100%;
-    max-height: none;
+    min-height: 0;
     overflow: hidden;
   }
 
-  .catalog-page .quick-view-redesign {
+  .catalog-page #quickViewContent .quick-view-redesign {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
     height: 100%;
@@ -22,11 +26,11 @@
     padding: 0;
   }
 
-  .catalog-page .quick-view-hero {
+  .catalog-page #quickViewContent .quick-view-hero {
     margin: 27px 18px 0;
   }
 
-  .catalog-page .quick-view-details {
+  .catalog-page #quickViewContent .quick-view-details {
     min-height: 0;
     padding: 18px 18px 22px;
     overflow-y: auto;
@@ -34,9 +38,42 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .catalog-page .quick-view-actions {
+  .catalog-page #quickViewContent .quick-view-actions {
     position: static;
+    z-index: auto;
     margin: 0;
     padding: 12px 18px max(14px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .catalog-page #quickViewContent .quick-view-document-list {
+    width: 100%;
+  }
+
+  .catalog-page #quickViewContent .quick-view-document {
+    grid-template-columns: 42px minmax(0, 1fr) 31px;
+    gap: 10px;
+    min-width: 0;
+    min-height: 58px;
+    padding: 9px 11px;
+  }
+
+  .catalog-page #quickViewContent .quick-view-document-copy {
+    min-width: 0;
+  }
+
+  .catalog-page #quickViewContent .quick-view-document-copy strong {
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .catalog-page #quickViewContent .quick-view-document-copy small {
+    display: block;
+    margin-top: 3px;
+    overflow-wrap: anywhere;
+    font-size: 11px;
+    line-height: 1.3;
   }
 }
