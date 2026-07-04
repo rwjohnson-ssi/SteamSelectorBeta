@@ -6,11 +6,11 @@
   "use strict";
 
   /*
-    Changing this token refreshes category.html for every category when a user
-    follows a category link. It prevents a cached category page from leaving
-    one equipment family on an older catalog layout or Quick View script.
+     Changing this token refreshes category.html for every category when a user
+     follows a category link. It prevents a cached category page from leaving
+     one equipment family on an older catalog layout or Quick View script.
   */
-  const CATALOG_RELEASE = "catalog-compact-qty-2";
+  const CATALOG_RELEASE = "catalog-quickview-3";
 
   const CATEGORY_DEFINITIONS = [
     {
