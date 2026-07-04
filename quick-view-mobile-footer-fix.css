@@ -1,0 +1,42 @@
+/*
+  Mobile Quick View layout correction.
+  Keeps the action footer visible without allowing it to cover Quantity or Documents.
+*/
+
+@media (max-width: 740px) {
+  .catalog-page .quick-view-dialog {
+    height: min(88dvh, 780px);
+  }
+
+  .catalog-page .quick-view-content {
+    height: 100%;
+    max-height: none;
+    overflow: hidden;
+  }
+
+  .catalog-page .quick-view-redesign {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .catalog-page .quick-view-hero {
+    margin: 27px 18px 0;
+  }
+
+  .catalog-page .quick-view-details {
+    min-height: 0;
+    padding: 18px 18px 22px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .catalog-page .quick-view-actions {
+    position: static;
+    margin: 0;
+    padding: 12px 18px max(14px, env(safe-area-inset-bottom, 0px));
+  }
+}
