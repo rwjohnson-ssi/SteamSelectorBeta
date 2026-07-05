@@ -274,6 +274,8 @@ body.catalog-filter-open .catalog-filter-drawer {
   }
 
   .catalog-filter-panel-heading {
+    justify-content: flex-start;
+    gap: 12px;
     min-height: 78px;
     padding: 0 22px;
   }
@@ -283,6 +285,8 @@ body.catalog-filter-open .catalog-filter-drawer {
   }
 
   .catalog-filter-panel-close {
+    order: -1;
+    flex: 0 0 auto;
     width: 43px;
     height: 43px;
     font-size: 42px;
