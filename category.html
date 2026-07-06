@@ -23,40 +23,21 @@
       padding-top: 22px;
     }
 
-    .catalog-page .quick-view-project-toggle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      min-height: 46px;
-      padding: 10px 14px;
-      color: #25303b;
-      background: #fff;
-      border: 2px solid #485463;
-      border-radius: 7px;
-      font: inherit;
-      font-size: 15px;
-      font-weight: 850;
+    .catalog-page .quick-view-project-section[hidden] {
+      display: none;
     }
 
-    .catalog-page .quick-view-project-toggle:hover {
-      color: #c8161e;
-      border-color: #c8161e;
+    .catalog-page .quick-view-actions .quick-view-project-toggle {
+      margin: 0;
     }
 
     .catalog-page .quick-view-project-panel {
       display: grid;
       gap: 12px;
-      margin-top: 10px;
       padding: 14px;
       background: #f8fafb;
       border: 1px solid #dfe4e8;
       border-radius: 10px;
-    }
-
-    .catalog-page .quick-view-project-panel[hidden] {
-      display: none;
     }
 
     .catalog-page .quick-view-project-help,
@@ -159,11 +140,6 @@
     @media (max-width: 740px) {
       .catalog-page .quick-view-project-section {
         padding-top: 18px;
-      }
-
-      .catalog-page .quick-view-project-toggle {
-        min-height: 44px;
-        font-size: 14px;
       }
 
       .catalog-page .quick-view-project-panel {
@@ -321,15 +297,15 @@
         const core = window.SteamSelectorCore;
         const product = currentProduct();
         const details = content.querySelector(".quick-view-details");
+        const actions = content.querySelector(".quick-view-actions");
         const modal = content.querySelector(".quick-view-redesign");
-        if (!core || !core.projects || !product || !details || !modal || modal.dataset.quickViewProjectReady === "true") return;
+        if (!core || !core.projects || !product || !details || !actions || !modal || modal.dataset.quickViewProjectReady === "true") return;
 
-        const section = document.createElement("section");
-        section.className = "quick-view-project-section";
-        section.innerHTML = "<h3 class=\"quick-view-section-title\">Project</h3>"
-          + "<button class=\"quick-view-project-toggle\" type=\"button\" data-quick-view-project-toggle aria-expanded=\"false\" aria-controls=\"quickViewProjectPanel\">"
-          + "<span aria-hidden=\"true\">＋</span><span>Add to Project</span></button>"
-          + "<div id=\"quickViewProjectPanel\" class=\"quick-view-project-panel\" hidden>"
+        const panelSection = document.createElement("section");
+        panelSection.id = "quickViewProjectPanel";
+        panelSection.className = "quick-view-project-section";
+        panelSection.hidden = true;
+        panelSection.innerHTML = "<div class=\"quick-view-project-panel\">"
           + "<p class=\"quick-view-project-help\">Save the selected quantity to a named project list.</p>"
           + "<label class=\"quick-view-project-field\"><span>Saved project</span>"
           + "<select data-quick-view-project-select aria-label=\"Saved project\">" + projectOptions("") + "</select></label>"
@@ -345,8 +321,21 @@
           + "</div>";
 
         const documentSection = details.querySelector(".quick-view-documents-section");
-        if (documentSection) details.insertBefore(section, documentSection);
-        else details.appendChild(section);
+        if (documentSection) details.insertBefore(panelSection, documentSection.nextSibling);
+        else details.appendChild(panelSection);
+
+        const projectButton = document.createElement("button");
+        projectButton.className = "btn btn-secondary quick-view-project-toggle";
+        projectButton.type = "button";
+        projectButton.setAttribute("data-quick-view-project-toggle", "");
+        projectButton.setAttribute("aria-expanded", "false");
+        projectButton.setAttribute("aria-controls", "quickViewProjectPanel");
+        projectButton.innerHTML = "<span aria-hidden=\"true\">＋</span><span>Add to Project</span>";
+
+        const quoteButton = actions.querySelector("[data-quick-view-add]");
+        if (quoteButton) actions.insertBefore(projectButton, quoteButton.nextSibling);
+        else actions.prepend(projectButton);
+
         modal.dataset.quickViewProjectReady = "true";
         refreshProjectPicker();
       }
@@ -365,8 +354,9 @@
           toggle.setAttribute("aria-expanded", String(opening));
           if (opening) {
             refreshProjectPicker();
-            const picker = panel.querySelector("[data-quick-view-project-select]");
-            if (picker && !picker.disabled) picker.focus();
+            window.requestAnimationFrame(function () {
+              panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            });
           }
           return;
         }
