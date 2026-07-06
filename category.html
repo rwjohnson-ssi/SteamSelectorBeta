@@ -18,6 +18,160 @@
   <link rel="stylesheet" href="catalog-header-clean.css?v=header-contract-2" />
   <link rel="stylesheet" href="quick-view-redesign.css?v=quick-view-approved-2" />
   <link rel="stylesheet" href="quick-view-mobile-footer-fix.css?v=quick-view-footer-2" />
+  <style>
+    .catalog-page .quick-view-project-section {
+      padding-top: 22px;
+    }
+
+    .catalog-page .quick-view-project-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 14px;
+      color: #25303b;
+      background: #fff;
+      border: 2px solid #485463;
+      border-radius: 7px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 850;
+    }
+
+    .catalog-page .quick-view-project-toggle:hover {
+      color: #c8161e;
+      border-color: #c8161e;
+    }
+
+    .catalog-page .quick-view-project-panel {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 14px;
+      background: #f8fafb;
+      border: 1px solid #dfe4e8;
+      border-radius: 10px;
+    }
+
+    .catalog-page .quick-view-project-panel[hidden] {
+      display: none;
+    }
+
+    .catalog-page .quick-view-project-help,
+    .catalog-page .quick-view-project-status {
+      margin: 0;
+      color: #667283;
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.4;
+    }
+
+    .catalog-page .quick-view-project-status {
+      color: #177245;
+    }
+
+    .catalog-page .quick-view-project-field {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .catalog-page .quick-view-project-field > span {
+      color: #4f5a68;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .catalog-page .quick-view-project-field input,
+    .catalog-page .quick-view-project-field select {
+      width: 100%;
+      min-height: 42px;
+      padding: 0 11px;
+      color: #29323c;
+      background: #fff;
+      border: 1px solid #cfd6dc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font: inherit;
+      font-size: 14px;
+    }
+
+    .catalog-page .quick-view-project-field select:disabled {
+      color: #778391;
+      background: #f1f3f5;
+    }
+
+    .catalog-page .quick-view-project-submit {
+      min-height: 42px;
+      padding: 0 13px;
+      color: #fff;
+      background: #e1242c;
+      border: 1px solid #e1242c;
+      border-radius: 6px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .catalog-page .quick-view-project-submit.is-secondary {
+      color: #27323d;
+      background: #fff;
+      border-color: #485463;
+    }
+
+    .catalog-page .quick-view-project-submit:disabled {
+      opacity: .55;
+    }
+
+    .catalog-page .quick-view-project-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #7d8895;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .catalog-page .quick-view-project-divider::before,
+    .catalog-page .quick-view-project-divider::after {
+      flex: 1;
+      height: 1px;
+      content: "";
+      background: #dfe4e8;
+    }
+
+    .catalog-page .quick-view-project-manage {
+      display: inline-flex;
+      width: fit-content;
+      color: #c8161e;
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .catalog-page .quick-view-project-manage:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 740px) {
+      .catalog-page .quick-view-project-section {
+        padding-top: 18px;
+      }
+
+      .catalog-page .quick-view-project-toggle {
+        min-height: 44px;
+        font-size: 14px;
+      }
+
+      .catalog-page .quick-view-project-panel {
+        gap: 10px;
+        padding: 12px;
+      }
+    }
+  </style>
 </head>
 <body class="catalog-page">
   <div id="siteHeaderMount"></div>
@@ -107,5 +261,174 @@
   <script src="site-header.js?v=header-contract-1"></script>
   <script src="category-global-search-exit.js?v=category-exit-1"></script>
   <script src="catalog-page.js?v=catalog-controller-3"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      const content = document.getElementById("quickViewContent");
+      if (!content) return;
+
+      function currentProduct() {
+        const core = window.SteamSelectorCore;
+        const products = window.SteamSelectorProducts;
+        const title = content.querySelector("#quickViewTitle");
+        if (!core || !products || !title) return null;
+        return products.getProductById(title.textContent.trim());
+      }
+
+      function selectedQuantity() {
+        const quantityApi = window.SteamSelectorQuantity;
+        const input = content.querySelector("#quickViewQty");
+        if (quantityApi && typeof quantityApi.normalize === "function") {
+          return quantityApi.normalize(input ? input.value : 1);
+        }
+        return Math.max(1, Math.floor(Number(input && input.value) || 1));
+      }
+
+      function projectOptions(selectedId) {
+        const core = window.SteamSelectorCore;
+        if (!core || !core.projects) return "<option value=\"\">Projects are unavailable</option>";
+        const projects = core.projects.load();
+        if (!projects.length) return "<option value=\"\">No saved projects yet</option>";
+
+        return "<option value=\"\">Select a saved project</option>" + projects.map(function (project) {
+          const selected = project.id === selectedId ? " selected" : "";
+          return "<option value=\"" + core.escapeHtml(project.id) + "\"" + selected + ">"
+            + core.escapeHtml(project.name) + "</option>";
+        }).join("");
+      }
+
+      function refreshProjectPicker(preferredId) {
+        const core = window.SteamSelectorCore;
+        const picker = content.querySelector("[data-quick-view-project-select]");
+        const addButton = content.querySelector("[data-quick-view-project-add]");
+        if (!core || !core.projects || !picker) return;
+
+        const selectedId = preferredId || picker.value;
+        const projects = core.projects.load();
+        picker.innerHTML = projectOptions(selectedId);
+        picker.disabled = projects.length === 0;
+        if (projects.some(function (project) { return project.id === selectedId; })) picker.value = selectedId;
+        if (addButton) addButton.disabled = projects.length === 0;
+      }
+
+      function projectStatus(message) {
+        const status = content.querySelector("[data-quick-view-project-status]");
+        if (status) status.textContent = message;
+      }
+
+      function addProjectSection() {
+        const core = window.SteamSelectorCore;
+        const product = currentProduct();
+        const details = content.querySelector(".quick-view-details");
+        const modal = content.querySelector(".quick-view-redesign");
+        if (!core || !core.projects || !product || !details || !modal || modal.dataset.quickViewProjectReady === "true") return;
+
+        const section = document.createElement("section");
+        section.className = "quick-view-project-section";
+        section.innerHTML = "<h3 class=\"quick-view-section-title\">Project</h3>"
+          + "<button class=\"quick-view-project-toggle\" type=\"button\" data-quick-view-project-toggle aria-expanded=\"false\" aria-controls=\"quickViewProjectPanel\">"
+          + "<span aria-hidden=\"true\">＋</span><span>Add to Project</span></button>"
+          + "<div id=\"quickViewProjectPanel\" class=\"quick-view-project-panel\" hidden>"
+          + "<p class=\"quick-view-project-help\">Save the selected quantity to a named project list.</p>"
+          + "<label class=\"quick-view-project-field\"><span>Saved project</span>"
+          + "<select data-quick-view-project-select aria-label=\"Saved project\">" + projectOptions("") + "</select></label>"
+          + "<button class=\"quick-view-project-submit\" type=\"button\" data-quick-view-project-add>Add to Selected Project</button>"
+          + "<div class=\"quick-view-project-divider\"><span>or</span></div>"
+          + "<label class=\"quick-view-project-field\"><span>New project name</span>"
+          + "<input type=\"text\" maxlength=\"120\" placeholder=\"Boiler Room Upgrade\" data-quick-view-project-name /></label>"
+          + "<label class=\"quick-view-project-field\"><span>Description <span class=\"muted\">(optional)</span></span>"
+          + "<input type=\"text\" maxlength=\"600\" placeholder=\"Steam equipment selection\" data-quick-view-project-description /></label>"
+          + "<button class=\"quick-view-project-submit is-secondary\" type=\"button\" data-quick-view-project-create>Create Project and Add Product</button>"
+          + "<a class=\"quick-view-project-manage\" href=\"projects.html\">Manage Projects</a>"
+          + "<p class=\"quick-view-project-status\" data-quick-view-project-status role=\"status\" aria-live=\"polite\"></p>"
+          + "</div>";
+
+        const documentSection = details.querySelector(".quick-view-documents-section");
+        if (documentSection) details.insertBefore(section, documentSection);
+        else details.appendChild(section);
+        modal.dataset.quickViewProjectReady = "true";
+        refreshProjectPicker();
+      }
+
+      const observer = new MutationObserver(addProjectSection);
+      observer.observe(content, { childList: true, subtree: true });
+      addProjectSection();
+
+      document.addEventListener("click", function (event) {
+        const toggle = event.target.closest("[data-quick-view-project-toggle]");
+        if (toggle && content.contains(toggle)) {
+          const panel = content.querySelector("#quickViewProjectPanel");
+          if (!panel) return;
+          const opening = panel.hidden;
+          panel.hidden = !opening;
+          toggle.setAttribute("aria-expanded", String(opening));
+          if (opening) {
+            refreshProjectPicker();
+            const picker = panel.querySelector("[data-quick-view-project-select]");
+            if (picker && !picker.disabled) picker.focus();
+          }
+          return;
+        }
+
+        const addButton = event.target.closest("[data-quick-view-project-add]");
+        if (addButton && content.contains(addButton)) {
+          const core = window.SteamSelectorCore;
+          const product = currentProduct();
+          const picker = content.querySelector("[data-quick-view-project-select]");
+          const projectId = picker ? picker.value : "";
+          if (!core || !core.projects || !product || !projectId) {
+            projectStatus("Choose a saved project or create a new project below.");
+            return;
+          }
+
+          const project = core.projects.addItem(projectId, product, selectedQuantity());
+          if (!project) {
+            projectStatus("That project is no longer available. Refresh the project list and try again.");
+            refreshProjectPicker();
+            return;
+          }
+
+          const quantity = selectedQuantity();
+          projectStatus(quantity === 1
+            ? product.id + " was added to \"" + project.name + "\"."
+            : quantity + " × " + product.id + " were added to \"" + project.name + "\".");
+          refreshProjectPicker(project.id);
+          return;
+        }
+
+        const createButton = event.target.closest("[data-quick-view-project-create]");
+        if (createButton && content.contains(createButton)) {
+          const core = window.SteamSelectorCore;
+          const product = currentProduct();
+          const nameInput = content.querySelector("[data-quick-view-project-name]");
+          const descriptionInput = content.querySelector("[data-quick-view-project-description]");
+          if (!core || !core.projects || !product || !nameInput) return;
+
+          const project = core.projects.create({
+            name: nameInput.value,
+            description: descriptionInput ? descriptionInput.value : ""
+          });
+          if (!project) {
+            projectStatus("Enter a new project name before creating it.");
+            nameInput.focus();
+            return;
+          }
+
+          const quantity = selectedQuantity();
+          core.projects.addItem(project.id, product, quantity);
+          nameInput.value = "";
+          if (descriptionInput) descriptionInput.value = "";
+          refreshProjectPicker(project.id);
+          projectStatus("Created \"" + project.name + "\" and added " + product.id + ".");
+        }
+      });
+
+      window.addEventListener("steamselector:projects-updated", function () {
+        const panel = content.querySelector("#quickViewProjectPanel");
+        if (panel && !panel.hidden) refreshProjectPicker();
+      });
+    })();
+  </script>
 </body>
 </html>
