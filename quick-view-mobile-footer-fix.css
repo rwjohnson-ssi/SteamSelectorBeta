@@ -1,27 +1,31 @@
 /*
-  Mobile Quick View layout correction.
-  Keep the entire Quick View content in one scrollable region so product actions
-  appear after Quantity, Project, and Documents instead of occupying a fixed footer.
+  Mobile Quick View action-flow correction.
+  Earlier Quick View stylesheets define the action area as sticky. On phones, keep
+  all content in a single scrollable dialog and place actions after product details.
 */
 
 @media (max-width: 740px) {
   .catalog-page .quick-view-dialog {
-    display: grid;
-    grid-template-rows: minmax(0, 1fr);
+    display: block !important;
     height: min(88dvh, 780px);
     max-height: min(88dvh, 780px);
   }
 
-  .catalog-page #quickViewContent {
+  .catalog-page #quickViewContent,
+  .catalog-page .quick-view-content {
+    display: block !important;
     height: 100%;
     min-height: 0;
-    overflow-y: auto;
+    max-height: none !important;
+    overflow-y: auto !important;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
   }
 
   .catalog-page #quickViewContent .quick-view-redesign {
-    display: block;
+    display: block !important;
+    grid-template-rows: none !important;
+    height: auto !important;
     min-height: 100%;
     padding: 0;
   }
@@ -33,17 +37,20 @@
   .catalog-page #quickViewContent .quick-view-details {
     min-height: 0;
     padding: 18px 18px 0;
-    overflow: visible;
+    overflow: visible !important;
   }
 
   .catalog-page #quickViewContent .quick-view-actions {
-    position: static;
-    z-index: auto;
-    margin: 20px 0 0;
-    padding: 16px 18px max(18px, env(safe-area-inset-bottom, 0px));
-    background: #fff;
+    position: static !important;
+    bottom: auto !important;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin: 20px 0 0 !important;
+    padding: 16px 18px max(18px, env(safe-area-inset-bottom, 0px)) !important;
+    background: #fff !important;
     border-top: 1px solid #edf0f2;
-    box-shadow: none;
+    box-shadow: none !important;
   }
 
   .catalog-page #quickViewContent .quick-view-document-list {
