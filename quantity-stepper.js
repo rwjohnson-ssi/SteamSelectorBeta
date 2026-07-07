@@ -26,10 +26,21 @@
       + "</div>";
   }
 
+  function syncQuickViewProjectLabel(input, quantity) {
+    if (!input || input.id !== "quickViewQty") return;
+
+    const projectButton = document.querySelector("#quickViewContent [data-quick-view-project-toggle]");
+    if (!projectButton) return;
+
+    projectButton.innerHTML = "<span aria-hidden=\"true\">＋</span><span>Add "
+      + quantity + " to Project</span>";
+  }
+
   function setValue(input, value) {
     if (!input) return 1;
     const nextValue = normalize(value);
     input.value = String(nextValue);
+    syncQuickViewProjectLabel(input, nextValue);
     input.dispatchEvent(new CustomEvent("steamselector:quantity-change", { bubbles: true }));
     return nextValue;
   }
@@ -40,9 +51,9 @@
 
   function bind() {
     /*
-      Every page uses one document-level delegated listener. This makes the
-      binding safe when Quick View content is opened repeatedly or when another
-      component asks to bind the shared stepper again.
+       Every page uses one document-level delegated listener. This makes the
+       binding safe when Quick View content is opened repeatedly or when another
+       component asks to bind the shared stepper again.
     */
     if (document[DOCUMENT_BIND_FLAG]) return;
     document[DOCUMENT_BIND_FLAG] = true;
