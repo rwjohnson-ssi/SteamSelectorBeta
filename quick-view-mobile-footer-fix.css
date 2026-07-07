@@ -35,9 +35,69 @@
   }
 
   .catalog-page #quickViewContent .quick-view-details {
+    display: flex;
+    flex-direction: column;
     min-height: 0;
     padding: 18px 18px 0;
     overflow: visible !important;
+  }
+
+  .catalog-page #quickViewContent .quick-view-spec-section {
+    order: 1;
+  }
+
+  .catalog-page #quickViewContent .quick-view-documents-section {
+    order: 2;
+  }
+
+  .catalog-page #quickViewContent .quick-view-quantity-section {
+    order: 3;
+    padding-top: 22px;
+  }
+
+  .catalog-page #quickViewContent .quick-view-project-section {
+    order: 4;
+  }
+
+  .catalog-page #quickViewContent .quick-view-order-row {
+    justify-items: stretch;
+    gap: 0;
+  }
+
+  .catalog-page #quickViewContent .quick-view-order-row .quantity-control,
+  .catalog-page #quickViewContent .quick-view-order-row .quantity-stepper {
+    width: 100%;
+  }
+
+  .catalog-page #quickViewContent .quick-view-order-row .quantity-stepper {
+    display: grid;
+    height: 50px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 1fr);
+    border-radius: 7px;
+  }
+
+  .catalog-page #quickViewContent .quick-view-order-row .quantity-stepper-button,
+  .catalog-page #quickViewContent .quick-view-order-row .quantity-stepper-input {
+    width: auto;
+    height: 50px;
+  }
+
+  .catalog-page #quickViewContent .quick-view-order-row .quantity-stepper-button {
+    font-size: 18px;
+  }
+
+  .catalog-page #quickViewContent .quick-view-order-row .quantity-stepper-input {
+    font-size: 17px;
+  }
+
+  .catalog-page #quickViewContent .quick-view-quantity-section::after {
+    display: block;
+    margin-top: 9px;
+    color: #687486;
+    content: "Quantity applies to both Quote and Project.";
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.35;
   }
 
   .catalog-page #quickViewContent .quick-view-actions {
