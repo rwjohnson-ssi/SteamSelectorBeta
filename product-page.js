@@ -16,6 +16,26 @@
 
   if (!detail || !related || !status) return;
 
+  function installProductDetailQuantityStyles() {
+    if (document.getElementById("productDetailQuantityStyles")) return;
+
+    const style = document.createElement("style");
+    style.id = "productDetailQuantityStyles";
+    style.textContent = ""
+      + ".product-page .product-action-row.product-action-row-redesign{display:grid;grid-template-columns:1fr;gap:10px;width:100%;margin-top:20px;}"
+      + ".product-page .product-detail-quantity{display:grid;gap:9px;width:100%;}"
+      + ".product-page .product-detail-quantity-title{margin:0;color:#4f5a68;font-size:13px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;}"
+      + ".product-page .product-detail-quantity .quantity-control{width:100%;}"
+      + ".product-page .product-detail-quantity .quantity-control-label{display:none;}"
+      + ".product-page .product-detail-quantity .quantity-stepper{display:grid;width:100%;height:50px;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) minmax(0,1fr);border-radius:7px;}"
+      + ".product-page .product-detail-quantity .quantity-stepper-button,.product-page .product-detail-quantity .quantity-stepper-input{width:auto;height:50px;}"
+      + ".product-page .product-detail-quantity .quantity-stepper-button{font-size:18px;}"
+      + ".product-page .product-detail-quantity .quantity-stepper-input{font-size:17px;}"
+      + ".product-page .product-detail-quantity-help{margin:0;color:#687486;font-size:12px;font-weight:650;line-height:1.35;}"
+      + ".product-page .product-action-row-redesign .btn{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:50px;}";
+    document.head.appendChild(style);
+  }
+
   if (!product) {
     core.renderBreadcrumbs([{ label: "Home", href: "index.html" }, { label: "Product Not Found" }]);
     detail.innerHTML = "<section class=\"product-section\"><h1>Product not found</h1><p class=\"product-doc-note\">That model is not in the public beta catalog.</p><div class=\"product-action-row\"><a class=\"btn btn-primary\" href=\"index.html\">Back to Home</a></div></section>";
@@ -42,11 +62,13 @@
   function updateAddButtonLabel() {
     const quantityInput = document.getElementById("productQty");
     const addButton = document.getElementById("addProductToQuote");
-    if (!quantityInput || !addButton) return;
+    const projectButton = document.getElementById("toggleProductProject");
+    if (!quantityInput) return;
 
     const quantity = quantityApi.normalize(quantityInput.value);
     quantityInput.value = String(quantity);
-    addButton.textContent = "Add " + quantity + " to Quote";
+    if (addButton) addButton.textContent = "Add " + quantity + " to Quote";
+    if (projectButton) projectButton.textContent = "Add " + quantity + " to Project";
   }
 
   function projectOptions(selectedId) {
@@ -71,6 +93,7 @@
     if (projectMessage) projectMessage.textContent = text;
   }
 
+  installProductDetailQuantityStyles();
   document.title = product.id + " | SteamSelector Beta";
   core.renderBreadcrumbs([
     { label: "Home", href: "index.html" },
@@ -86,10 +109,12 @@
     + "<p class=\"product-summary\">" + core.escapeHtml(product.summary) + "</p>"
     + "<p class=\"product-description\">" + core.escapeHtml(product.description) + "</p>"
     + "<div class=\"product-specs\">" + renderSpecs() + "</div>"
-    + "<div class=\"product-action-row\">"
+    + "<div class=\"product-action-row product-action-row-redesign\">"
+    + "<section class=\"product-detail-quantity\"><h2 class=\"product-detail-quantity-title\">Quantity</h2>"
     + quantityApi.markup("productQty", "Quantity")
+    + "<p class=\"product-detail-quantity-help\">Quantity applies to both Quote and Project.</p></section>"
     + "<button id=\"addProductToQuote\" class=\"btn btn-primary\" type=\"button\">Add 1 to Quote</button>"
-    + "<button id=\"toggleProductProject\" class=\"btn btn-secondary\" type=\"button\" aria-expanded=\"false\" aria-controls=\"productProjectPanel\">Add to Project</button>"
+    + "<button id=\"toggleProductProject\" class=\"btn btn-secondary\" type=\"button\" aria-expanded=\"false\" aria-controls=\"productProjectPanel\">Add 1 to Project</button>"
     + "<a class=\"btn btn-secondary\" href=\"quote.html\">View Quote</a>"
     + "</div>"
     + "<section id=\"productProjectPanel\" class=\"product-project-panel\" hidden>"
